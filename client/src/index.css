@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    @apply text-lb-black bg-lb-white antialiased;
+  }
+  h1, h2, h3, h4, h5 { font-family: 'Playfair Display', serif; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-lb-rose text-white px-8 py-3 text-[13px] font-bold tracking-widest uppercase shadow-md shadow-pink-500/20
+           hover:bg-lb-mauve hover:shadow-lg hover:shadow-pink-500/40 transition-all duration-300 cursor-pointer
+           disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2;
+  }
+  .btn-outline {
+    @apply border-2 border-lb-rose text-lb-rose bg-white/50 px-8 py-3 text-[13px] font-bold tracking-widest uppercase
+           hover:bg-lb-rose hover:text-white shadow-sm hover:shadow-lg hover:shadow-pink-500/40 transition-all duration-300 cursor-pointer inline-flex items-center justify-center gap-2;
+  }
+  .btn-ghost {
+    @apply text-lb-black text-xs font-semibold tracking-widest uppercase
+           hover:text-lb-mauve transition-colors duration-200 cursor-pointer;
+  }
+  .input-field {
+    @apply w-full border border-lb-border px-4 py-3 text-sm focus:outline-none focus:border-lb-black
+           transition-colors duration-200 bg-white placeholder-gray-400 rounded-none;
+  }
+  .lb-card {
+    @apply bg-white border border-lb-border hover:shadow-xl transition-all duration-300;
+  }
+  .section-title {
+    @apply font-display text-3xl md:text-4xl font-medium text-lb-black;
+  }
+  .badge-gold {
+    @apply bg-lb-gold text-white text-[10px] font-bold tracking-widest uppercase px-2 py-0.5;
+  }
+  .badge-blush {
+    @apply bg-lb-blush text-lb-mauve text-[10px] font-bold tracking-widest uppercase px-2 py-0.5;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #FFE0EF; }
+::-webkit-scrollbar-thumb { background: #FF1493; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #D1006E; }

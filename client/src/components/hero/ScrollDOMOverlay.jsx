@@ -3,274 +3,426 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import useBeautyStore from '../../store/beautyStore';
-import { getProducts } from '../../api/productApi';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ─── Glassmorphism panel (reusable) ─────────────────────────────────────────
-const Glass = ({ children, className = '', style = {} }) => (
-  <div
-    className={className}
-    style={{
-      background: 'linear-gradient(135deg, rgba(255,255,255,0.42), rgba(255,240,245,0.22))',
-      backdropFilter: 'blur(18px) saturate(180%)',
-      WebkitBackdropFilter: 'blur(18px) saturate(180%)',
-      border: '1px solid rgba(255,255,255,0.52)',
-      boxShadow: '0 8px 32px 0 rgba(248,200,220,0.22)',
-      borderRadius: 20,
-      ...style,
-    }}
-  >
+// ─── Pinterest image ──────────────────────────────────────────────────────────
+const FLOWER_KNOWS_IMG = 'https://i.pinimg.com/736x/3d/f6/d3/3df6d3136158907d900be51d2f5e3b9d.jpg';
+
+// ─── Design tokens ────────────────────────────────────────────────────────────
+const C = {
+  roseGold:  '#B76E79',
+  brass:     '#C5A059',
+  deepRose:  '#8B2252',
+  richPink:  '#C2185B',
+  blush:     '#F8C8DC',
+  espresso:  '#2C1E22',
+  mutedRose: '#E8B4B8',
+  white:     '#FFFFFF',
+};
+
+// ─── Glassmorphism panel ──────────────────────────────────────────────────────
+const Glass = ({ children, style = {} }) => (
+  <div style={{
+    background: 'linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,240,245,0.30))',
+    backdropFilter: 'blur(20px) saturate(200%)',
+    WebkitBackdropFilter: 'blur(20px) saturate(200%)',
+    border: '1px solid rgba(255,255,255,0.65)',
+    boxShadow: '0 8px 40px rgba(183,110,121,0.18)',
+    borderRadius: 20,
+    ...style,
+  }}>
     {children}
   </div>
 );
 
-// ─── Bow / pearl scroll indicator ────────────────────────────────────────────
-function ScrollCue() {
-  return (
-    <div className="flex flex-col items-center gap-2 animate-bounce-gentle">
-      <span style={{ fontSize: 22, lineHeight: 1 }}>🎀</span>
-      <div style={{
-        width: 1, height: 52, background: 'linear-gradient(to bottom, rgba(183,110,121,0.6), transparent)',
-      }} />
-      <p style={{
-        fontSize: 10, letterSpacing: 5, textTransform: 'uppercase',
-        color: '#B76E79', fontFamily: "'Inter', sans-serif", fontWeight: 500,
-      }}>
-        Scroll
-      </p>
-    </div>
-  );
-}
-
 // ─── Rose-gold star ───────────────────────────────────────────────────────────
-const Star = ({ filled = true }) => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill={filled ? '#C5A059' : 'none'}
-    stroke="#C5A059" strokeWidth="1.5">
+const Star = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="#C5A059">
     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );
 
-// ─── Zone 0: Hero Arrival ─────────────────────────────────────────────────────
-function Zone0() {
-  const headRef  = useRef();
-  const sub1Ref  = useRef();
-  const sub2Ref  = useRef();
-  const cueRef   = useRef();
-  const { activeZone } = useBeautyStore();
-
-  const visible = activeZone === 0;
+// ─── Floating Flower Knows image with glow ─────────────────────────────────
+function FlowerKnowsPaletteDisplay({ visible }) {
+  const imgRef = useRef();
 
   useEffect(() => {
-    const els = [headRef.current, sub1Ref.current, sub2Ref.current];
+    if (!imgRef.current) return;
+    // If visible in zone 0 or 1, show it; fade out in zones 2+
     if (visible) {
-      gsap.fromTo(els, { opacity: 0, y: 28 }, {
-        opacity: 1, y: 0, stagger: 0.15, duration: 1, ease: 'power3.out', delay: 0.1,
-      });
+      gsap.to(imgRef.current, { opacity: 1, scale: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.4 });
     } else {
-      gsap.to(els, { opacity: 0, y: -16, duration: 0.4, ease: 'power2.in' });
+      gsap.to(imgRef.current, { opacity: 0, scale: 0.92, y: 20, duration: 0.5, ease: 'power2.in' });
     }
   }, [visible]);
 
   return (
     <div
-      className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
-      style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.5s ease' }}
+      ref={imgRef}
+      style={{
+        position: 'relative',
+        width: '100%',
+        maxWidth: 400,
+        margin: '0 auto',
+        opacity: 0,
+        transform: 'translateY(20px) scale(0.96)',
+      }}
     >
-      {/* Eyebrow */}
-      <p ref={sub1Ref} style={{
-        fontFamily: "'Inter', sans-serif", fontWeight: 300,
-        fontSize: 11, letterSpacing: 7, textTransform: 'uppercase',
-        color: '#B76E79', marginBottom: 20,
-      }}>
-        Kivara Beauty · 2026 Collection
-      </p>
+      {/* Soft radial glow behind image */}
+      <div style={{
+        position: 'absolute',
+        inset: -40,
+        borderRadius: '50%',
+        background: 'radial-gradient(ellipse at center, rgba(194,24,91,0.22) 0%, rgba(183,110,121,0.15) 40%, transparent 70%)',
+        filter: 'blur(24px)',
+        zIndex: 0,
+        animation: 'pulseGlow 3s ease-in-out infinite',
+      }} />
 
-      {/* Hero headline */}
-      <h1 ref={headRef} style={{
-        fontFamily: "'Playfair Display', serif",
-        fontSize: 'clamp(2.8rem, 7vw, 6.5rem)',
-        fontWeight: 700,
-        color: '#2C1E22',
-        textAlign: 'center',
-        lineHeight: 1.1,
-        letterSpacing: '-0.02em',
-        maxWidth: 780,
-        marginBottom: 24,
-      }}>
-        The Era of{' '}
-        <em style={{
-          fontStyle: 'italic',
-          background: 'linear-gradient(135deg, #B76E79, #E8B4B8, #C5A059)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
+      {/* Decorative ring */}
+      <div style={{
+        position: 'absolute',
+        inset: -14,
+        borderRadius: 28,
+        border: '1px solid rgba(183,110,121,0.25)',
+        zIndex: 0,
+      }} />
+      <div style={{
+        position: 'absolute',
+        inset: -28,
+        borderRadius: 36,
+        border: '1px solid rgba(197,160,89,0.15)',
+        zIndex: 0,
+      }} />
+
+      {/* Sparkle decorations */}
+      {[
+        { top: -18, left: '15%', size: 16, delay: 0 },
+        { top: -12, right: '20%', size: 12, delay: 0.4 },
+        { bottom: -16, left: '25%', size: 10, delay: 0.8 },
+        { top: '30%', right: -20, size: 14, delay: 0.2 },
+        { top: '60%', left: -20, size: 11, delay: 0.6 },
+      ].map((pos, i) => (
+        <div key={i} style={{
+          position: 'absolute',
+          zIndex: 3,
+          animation: `float-slow ${2.5 + i * 0.4}s ease-in-out infinite`,
+          animationDelay: `${pos.delay}s`,
+          top: pos.top, bottom: pos.bottom, left: pos.left, right: pos.right,
         }}>
-          Ethereal
-        </em>
-        {' '}Beauty
-      </h1>
+          <svg width={pos.size} height={pos.size} viewBox="0 0 24 24" fill="#C5A059" opacity="0.8">
+            <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41Z" />
+          </svg>
+        </div>
+      ))}
 
-      {/* Subline */}
-      <p ref={sub2Ref} style={{
-        fontFamily: "'Inter', sans-serif", fontWeight: 300,
-        fontSize: 16, color: 'rgba(44,30,34,0.55)',
-        letterSpacing: 0.5, maxWidth: 460, textAlign: 'center', lineHeight: 1.7,
-        marginBottom: 60,
+      {/* The actual image */}
+      <div style={{
+        position: 'relative', zIndex: 1,
+        borderRadius: 24,
+        overflow: 'hidden',
+        boxShadow: '0 24px 80px rgba(194,24,91,0.2), 0 8px 32px rgba(0,0,0,0.08)',
+        animation: 'float-gentle 5s ease-in-out infinite',
       }}>
-        Discover a curated world where science meets artistry — premium beauty, 
-        crafted for every complexion.
-      </p>
+        <img
+          src={FLOWER_KNOWS_IMG}
+          alt="Flower Knows Dreamy Palette Collection"
+          onError={(e) => {
+            e.target.src = 'https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg?auto=compress&cs=tinysrgb&w=800';
+          }}
+          style={{
+            width: '100%',
+            height: 'auto',
+            display: 'block',
+            objectFit: 'cover',
+          }}
+        />
+        {/* Shimmer overlay */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(183,110,121,0.04) 100%)',
+          pointerEvents: 'none',
+        }} />
+      </div>
 
-      {/* Scroll cue */}
-      <div ref={cueRef} style={{ pointerEvents: 'none' }}>
-        <ScrollCue />
+      {/* Floating badge */}
+      <div style={{
+        position: 'absolute',
+        bottom: -16,
+        right: 16,
+        zIndex: 4,
+      }}>
+        <Glass style={{ padding: '8px 16px', borderRadius: 50 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {[1,2,3,4,5].map(i => <Star key={i} />)}
+            <span style={{
+              fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600,
+              color: C.espresso, marginLeft: 4, letterSpacing: 0.5,
+            }}>4.9</span>
+          </div>
+        </Glass>
+      </div>
+
+      {/* Brand pill */}
+      <div style={{ position: 'absolute', top: -16, left: 16, zIndex: 4 }}>
+        <Glass style={{ padding: '6px 14px', borderRadius: 50 }}>
+          <span style={{
+            fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700,
+            color: C.deepRose, letterSpacing: 3, textTransform: 'uppercase',
+          }}>
+            ✦ Flower Knows
+          </span>
+        </Glass>
       </div>
     </div>
   );
 }
 
-// ─── Zone 1: Product Expansion + category portals ────────────────────────────
-function Zone1() {
-  const cardsRef  = useRef([]);
-  const labelRef  = useRef();
-  const { activeZone, setHoveredCard } = useBeautyStore();
-  const visible = activeZone === 1;
+// ─── Zone 0: Hero ─────────────────────────────────────────────────────────────
+function Zone0({ visible }) {
+  const textRef   = useRef();
+  const rightRef  = useRef();
 
   useEffect(() => {
+    if (!textRef.current || !rightRef.current) return;
     if (visible) {
-      gsap.fromTo(labelRef.current, { opacity: 0, y: 20 }, {
-        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.1,
-      });
-      gsap.fromTo(cardsRef.current, { opacity: 0, x: -40 }, {
-        opacity: 1, x: 0, stagger: 0.18, duration: 0.9, ease: 'power3.out', delay: 0.25,
-      });
+      gsap.fromTo([textRef.current], { opacity: 0, x: -30 },
+        { opacity: 1, x: 0, duration: 1, ease: 'power3.out', delay: 0.1 });
+      gsap.fromTo([rightRef.current], { opacity: 0, x: 30 },
+        { opacity: 1, x: 0, duration: 1, ease: 'power3.out', delay: 0.2 });
     } else {
-      gsap.to([labelRef.current, ...cardsRef.current], {
-        opacity: 0, duration: 0.3, ease: 'power1.in',
-      });
+      gsap.to([textRef.current, rightRef.current], { opacity: 0, duration: 0.35 });
+    }
+  }, [visible]);
+
+  return (
+    <div
+      className="absolute inset-0 flex items-center"
+      style={{
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 0.4s ease',
+        pointerEvents: visible ? 'auto' : 'none',
+        padding: '0 48px',
+      }}
+    >
+      {/* Left — text */}
+      <div ref={textRef} style={{ flex: 1, paddingRight: 40, maxWidth: 560 }}>
+        <p style={{
+          fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: 11,
+          letterSpacing: 6, textTransform: 'uppercase', color: C.roseGold, marginBottom: 20,
+        }}>
+          Kivara Beauty · 2026 Collection
+        </p>
+
+        <h1 style={{
+          fontFamily: "'Playfair Display', serif",
+          fontSize: 'clamp(2.6rem, 5.5vw, 5.4rem)',
+          fontWeight: 700, color: C.espresso,
+          lineHeight: 1.08, letterSpacing: '-0.025em', marginBottom: 22,
+        }}>
+          The Era of<br />
+          <em style={{
+            fontStyle: 'italic',
+            background: `linear-gradient(135deg, ${C.richPink}, ${C.roseGold}, ${C.brass})`,
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}>
+            Ethereal
+          </em>{' '}Beauty
+        </h1>
+
+        <p style={{
+          fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: 15,
+          color: 'rgba(44,30,34,0.60)', lineHeight: 1.75, maxWidth: 400, marginBottom: 32,
+        }}>
+          Discover a world where science meets artistry — premium makeup and skincare,
+          curated for every complexion, crafted for every occasion.
+        </p>
+
+        {/* CTAs */}
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 40 }}>
+          <Link to="/shop?category=Lips" style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '13px 30px', borderRadius: 50, textDecoration: 'none',
+            fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 12,
+            letterSpacing: 2, textTransform: 'uppercase', color: '#fff',
+            background: `linear-gradient(135deg, ${C.richPink}, ${C.deepRose})`,
+            boxShadow: '0 8px 32px rgba(194,24,91,0.35)',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(194,24,91,0.5)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(194,24,91,0.35)'; }}
+          >
+            💋 Shop Collection
+          </Link>
+          <Link to="/shop" style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '13px 28px', borderRadius: 50, textDecoration: 'none',
+            fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: 12,
+            letterSpacing: 2, textTransform: 'uppercase', color: C.roseGold,
+            border: `2px solid ${C.roseGold}`, transition: 'all 0.2s',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(183,110,121,0.08)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+          >
+            Explore All →
+          </Link>
+        </div>
+
+        {/* Stats */}
+        <div style={{ display: 'flex', gap: 28 }}>
+          {[
+            ['56+', 'Products'],
+            ['15+', 'Brands'],
+            ['4.9★', 'Rating'],
+          ].map(([val, label]) => (
+            <div key={label}>
+              <p style={{
+                fontFamily: "'Playfair Display', serif", fontSize: 26, fontWeight: 700,
+                color: C.richPink, letterSpacing: '-0.01em',
+              }}>{val}</p>
+              <p style={{
+                fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 400,
+                color: 'rgba(44,30,34,0.45)', letterSpacing: 3, textTransform: 'uppercase', marginTop: 2,
+              }}>{label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Scroll cue */}
+        <div style={{ marginTop: 48, display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{
+            width: 1, height: 40, background: `linear-gradient(to bottom, ${C.roseGold}, transparent)`,
+            animation: 'pulseGlow 2s ease-in-out infinite',
+          }} />
+          <span style={{
+            fontFamily: "'Inter', sans-serif", fontSize: 10, letterSpacing: 5,
+            textTransform: 'uppercase', color: C.roseGold, fontWeight: 500,
+          }}>
+            🎀 Scroll to discover
+          </span>
+        </div>
+      </div>
+
+      {/* Right — Flower Knows palette */}
+      <div ref={rightRef} style={{
+        flex: '0 0 auto', width: 'min(420px, 40vw)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <FlowerKnowsPaletteDisplay visible={visible} />
+      </div>
+    </div>
+  );
+}
+
+// ─── Zone 1: Category portals ─────────────────────────────────────────────────
+function Zone1({ visible }) {
+  const containerRef = useRef();
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const cards = containerRef.current.querySelectorAll('.portal-card');
+    if (visible) {
+      gsap.fromTo(containerRef.current.querySelector('.zone1-label'),
+        { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' });
+      gsap.fromTo(cards,
+        { opacity: 0, x: -36 },
+        { opacity: 1, x: 0, stagger: 0.15, duration: 0.8, ease: 'power3.out', delay: 0.15 });
+    } else {
+      gsap.to([containerRef.current.querySelector('.zone1-label'), ...cards],
+        { opacity: 0, duration: 0.3 });
     }
   }, [visible]);
 
   const portals = [
-    {
-      id: 'skincare',
-      label: 'Curated Skincare',
-      sub: 'Science-backed rituals for radiant skin',
-      emoji: '🌿',
-      link: '/shop?category=Skincare',
-      grad: 'linear-gradient(135deg, rgba(232,180,184,0.6), rgba(248,200,220,0.4))',
-    },
-    {
-      id: 'makeup',
-      label: 'Ethereal Makeup',
-      sub: 'Pigment-rich artistry for every mood',
-      emoji: '💄',
-      link: '/shop?category=Lips',
-      grad: 'linear-gradient(135deg, rgba(197,160,89,0.3), rgba(183,110,121,0.5))',
-    },
-    {
-      id: 'haircare',
-      label: 'Luxe Hair Care',
-      sub: 'Indulgent formulas for luminous locks',
-      emoji: '✨',
-      link: '/shop?category=Hair+Care',
-      grad: 'linear-gradient(135deg, rgba(248,200,220,0.5), rgba(232,180,184,0.35))',
-    },
+    { id: 'skincare',  label: 'Curated Skincare',  sub: 'Science-backed rituals for radiant skin', emoji: '🌿', link: '/shop?category=Skincare',   grad: 'linear-gradient(135deg, rgba(232,180,184,0.7), rgba(248,200,220,0.5))' },
+    { id: 'makeup',    label: 'Ethereal Makeup',    sub: 'Pigment-rich artistry for every mood',    emoji: '💄', link: '/shop?category=Lips',         grad: 'linear-gradient(135deg, rgba(194,24,91,0.18), rgba(183,110,121,0.45))' },
+    { id: 'haircare',  label: 'Luxe Hair Care',     sub: 'Indulgent formulas for luminous locks',   emoji: '✨', link: '/shop?category=Hair+Care',    grad: 'linear-gradient(135deg, rgba(197,160,89,0.25), rgba(248,200,220,0.4))' },
+    { id: 'eyes',      label: 'Statement Eyes',     sub: 'Palettes, liners & mascaras',             emoji: '👁️', link: '/shop?category=Eyes',         grad: 'linear-gradient(135deg, rgba(139,34,82,0.18), rgba(194,24,91,0.35))' },
   ];
 
   return (
     <div
-      className="absolute inset-0 flex items-center pointer-events-none"
-      style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease', paddingLeft: 48 }}
+      ref={containerRef}
+      className="absolute inset-0 flex items-center"
+      style={{
+        opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease',
+        pointerEvents: visible ? 'auto' : 'none',
+        padding: '0 48px',
+      }}
     >
-      <div style={{ maxWidth: 340, pointerEvents: visible ? 'auto' : 'none' }}>
-        <p ref={labelRef} style={{
-          fontFamily: "'Inter', sans-serif", fontWeight: 300,
-          fontSize: 11, letterSpacing: 6, textTransform: 'uppercase',
-          color: '#B76E79', marginBottom: 28,
+      <div style={{ maxWidth: 400, width: '100%' }}>
+        <p className="zone1-label" style={{
+          fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: 11,
+          letterSpacing: 6, textTransform: 'uppercase', color: C.roseGold, marginBottom: 28,
         }}>
           Browse the Collection
         </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {portals.map((p, i) => (
-            <Link
-              key={p.id}
-              to={p.link}
-              ref={el => cardsRef.current[i] = el}
-              onMouseEnter={() => setHoveredCard(p.id)}
-              onMouseLeave={() => setHoveredCard(null)}
-              style={{
-                display: 'block', textDecoration: 'none', padding: '18px 22px',
-                borderRadius: 18, cursor: 'pointer',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                background: p.grad,
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: '1px solid rgba(255,255,255,0.5)',
-                boxShadow: '0 6px 24px rgba(248,200,220,0.15)',
-              }}
-              onMouseEnter={(e) => {
-                setHoveredCard(p.id);
-                e.currentTarget.style.transform = 'translateX(6px) scale(1.01)';
-                e.currentTarget.style.boxShadow = '0 12px 40px rgba(183,110,121,0.3)';
-              }}
-              onMouseLeave={(e) => {
-                setHoveredCard(null);
-                e.currentTarget.style.transform = 'translateX(0) scale(1)';
-                e.currentTarget.style.boxShadow = '0 6px 24px rgba(248,200,220,0.15)';
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <span style={{ fontSize: 26 }}>{p.emoji}</span>
-                <div>
-                  <p style={{
-                    fontFamily: "'Playfair Display', serif",
-                    color: '#2C1E22', fontSize: 17, fontWeight: 600, marginBottom: 3,
-                    letterSpacing: '-0.01em',
-                  }}>
-                    {p.label}
-                  </p>
-                  <p style={{
-                    fontFamily: "'Inter', sans-serif",
-                    color: 'rgba(44,30,34,0.55)', fontSize: 12, fontWeight: 300,
-                    letterSpacing: 0.3, lineHeight: 1.5,
-                  }}>
-                    {p.sub}
-                  </p>
-                </div>
-                <span style={{ marginLeft: 'auto', color: '#B76E79', fontSize: 18, opacity: 0.7 }}>→</span>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {portals.map((p) => (
+          <Link
+            key={p.id}
+            to={p.link}
+            className="portal-card"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 16, textDecoration: 'none',
+              padding: '16px 20px', borderRadius: 18, marginBottom: 12,
+              background: p.grad,
+              backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
+              border: '1px solid rgba(255,255,255,0.55)',
+              boxShadow: '0 4px 20px rgba(183,110,121,0.12)',
+              transition: 'transform 0.25s, box-shadow 0.25s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateX(8px) scale(1.01)';
+              e.currentTarget.style.boxShadow = '0 10px 36px rgba(194,24,91,0.22)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateX(0)';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(183,110,121,0.12)';
+            }}
+          >
+            <span style={{ fontSize: 28 }}>{p.emoji}</span>
+            <div style={{ flex: 1 }}>
+              <p style={{
+                fontFamily: "'Playfair Display', serif", fontSize: 16, fontWeight: 700,
+                color: C.espresso, marginBottom: 2, letterSpacing: '-0.01em',
+              }}>{p.label}</p>
+              <p style={{
+                fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 300,
+                color: 'rgba(44,30,34,0.55)', lineHeight: 1.5,
+              }}>{p.sub}</p>
+            </div>
+            <span style={{ color: C.roseGold, fontSize: 16, opacity: 0.8 }}>→</span>
+          </Link>
+        ))}
       </div>
     </div>
   );
 }
 
-// ─── Zone 2: Exploded view + Skincare AI interface ──────────────────────────
-function Zone2() {
-  const panelRef = useRef();
-  const inputRef = useRef();
-  const { activeZone, chatMessages, chatLoading, addMessage, setChatLoading } = useBeautyStore();
-  const visible = activeZone === 2;
+// ─── Zone 2: AI Beauty Intelligence ──────────────────────────────────────────
+function Zone2({ visible }) {
+  const panelRef  = useRef();
+  const inputRef  = useRef();
+  const { chatMessages, chatLoading, addMessage, setChatLoading } = useBeautyStore();
 
   useEffect(() => {
-    if (visible && panelRef.current) {
+    if (!panelRef.current) return;
+    if (visible) {
       gsap.fromTo(panelRef.current,
-        { opacity: 0, y: 60 },
-        { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.3 }
-      );
-    } else if (panelRef.current) {
-      gsap.to(panelRef.current, { opacity: 0, y: 30, duration: 0.35, ease: 'power2.in' });
+        { opacity: 0, y: 55 },
+        { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.25 });
+    } else {
+      gsap.to(panelRef.current, { opacity: 0, y: 24, duration: 0.35 });
     }
   }, [visible]);
 
   const handleSend = async () => {
     const text = inputRef.current?.value?.trim();
-    if (!text) return;
+    if (!text || chatLoading) return;
     inputRef.current.value = '';
     addMessage({ role: 'user', content: text });
     setChatLoading(true);
@@ -281,7 +433,7 @@ function Zone2() {
         body: JSON.stringify({ message: text }),
       });
       const data = await res.json();
-      addMessage({ role: 'assistant', content: data.reply || data.message || 'Let me help you find the perfect routine ✨' });
+      addMessage({ role: 'assistant', content: data.reply || data.message || 'Let me help you find your perfect ritual. ✨' });
     } catch {
       addMessage({ role: 'assistant', content: 'I\'m here to guide you to your perfect beauty ritual. 🌸' });
     } finally {
@@ -289,358 +441,311 @@ function Zone2() {
     }
   };
 
+  const PROMPTS = ['Dry, sensitive skin', 'Anti-aging routine', 'Oily skin + acne', 'Glass skin glow'];
+
   return (
     <div
-      className="absolute inset-0 flex items-end justify-center pointer-events-none"
-      style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease', paddingBottom: 40 }}
+      className="absolute inset-0 flex items-end justify-center pb-10"
+      style={{
+        opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease',
+        pointerEvents: visible ? 'auto' : 'none',
+      }}
     >
-      <Glass
-        ref={panelRef}
-        style={{
-          width: '100%', maxWidth: 560, padding: '28px 32px',
-          pointerEvents: visible ? 'auto' : 'none',
-          borderRadius: 24,
-        }}
-      >
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
-          <div style={{
-            width: 44, height: 44, borderRadius: '50%',
-            background: 'linear-gradient(135deg, #B76E79, #E8B4B8)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 0 0 3px rgba(183,110,121,0.15)',
-          }}>
-            <span style={{ fontSize: 20 }}>✨</span>
-          </div>
-          <div>
-            <p style={{
-              fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700,
-              color: '#2C1E22', letterSpacing: '-0.01em', marginBottom: 2,
-            }}>
-              Beauty Intelligence
-            </p>
-            <p style={{
-              fontFamily: "'Inter', sans-serif", fontSize: 11, color: '#B76E79',
-              fontWeight: 400, letterSpacing: 2, textTransform: 'uppercase',
-            }}>
-              · Active · Personalizing
-            </p>
-          </div>
-          <div style={{ marginLeft: 'auto' }}>
-            <div style={{ /* pulsing dot */
-              width: 8, height: 8, borderRadius: '50%',
-              background: '#B76E79', animation: 'pulseGlow 1.8s ease-in-out infinite',
+      {/* Zone 2 background label */}
+      <div style={{
+        position: 'absolute', top: '15%', left: '50%', transform: 'translateX(-50%)',
+        textAlign: 'center',
+      }}>
+        <p style={{
+          fontFamily: "'Playfair Display', serif", fontWeight: 700,
+          fontSize: 'clamp(1.6rem, 4vw, 3rem)',
+          background: `linear-gradient(135deg, ${C.richPink}, ${C.roseGold})`,
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text', opacity: visible ? 0.85 : 0,
+        }}>
+          The Science Within
+        </p>
+        <p style={{
+          fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: 13,
+          color: `rgba(44,30,34,0.45)`, letterSpacing: 1, marginTop: 8,
+        }}>
+          Every formula, every ingredient — decoded for you.
+        </p>
+      </div>
+
+      {/* AI Chat Panel */}
+      <div ref={panelRef} style={{ width: '100%', maxWidth: 580, padding: '0 24px' }}>
+        <Glass style={{ padding: '28px 30px' }}>
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
+            <div style={{
+              width: 46, height: 46, borderRadius: '50%',
+              background: `linear-gradient(135deg, ${C.richPink}, ${C.roseGold})`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
+              boxShadow: `0 0 0 4px rgba(183,110,121,0.15)`,
+            }}>✨</div>
+            <div style={{ flex: 1 }}>
+              <p style={{
+                fontFamily: "'Playfair Display', serif", fontSize: 16, fontWeight: 700,
+                color: C.espresso, marginBottom: 3, letterSpacing: '-0.01em',
+              }}>Beauty Intelligence</p>
+              <p style={{
+                fontFamily: "'Inter', sans-serif", fontSize: 10, color: C.roseGold,
+                letterSpacing: 3, textTransform: 'uppercase',
+              }}>· Active · Personalizing for You</p>
+            </div>
+            <div style={{
+              width: 9, height: 9, borderRadius: '50%', background: C.richPink,
+              animation: 'pulseGlow 1.8s ease-in-out infinite',
             }} />
           </div>
-        </div>
 
-        {/* Divider */}
-        <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(183,110,121,0.3), transparent)', marginBottom: 18 }} />
+          {/* Divider */}
+          <div style={{ height: 1, background: `linear-gradient(to right, transparent, rgba(183,110,121,0.3), transparent)`, marginBottom: 18 }} />
 
-        {/* Suggested prompts */}
-        {chatMessages.length === 0 && (
-          <div style={{ marginBottom: 16 }}>
-            <p style={{
-              fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'rgba(44,30,34,0.45)',
-              letterSpacing: 3, textTransform: 'uppercase', marginBottom: 12,
-            }}>
-              Suggested
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {['Dry, sensitive skin', 'Anti-aging routine', 'Oily skin + acne', 'Bright & dewy glow'].map(s => (
-                <button key={s}
-                  onClick={() => { if (inputRef.current) inputRef.current.value = s; }}
-                  style={{
-                    fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 400,
-                    color: '#B76E79', padding: '5px 12px', borderRadius: 50,
-                    border: '1px solid rgba(183,110,121,0.3)',
-                    background: 'rgba(248,200,220,0.12)', cursor: 'pointer',
-                    transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={e => e.target.style.background = 'rgba(183,110,121,0.15)'}
-                  onMouseLeave={e => e.target.style.background = 'rgba(248,200,220,0.12)'}
-                >
-                  {s}
-                </button>
-              ))}
+          {/* Prompts or chat log */}
+          {chatMessages.length === 0 ? (
+            <div style={{ marginBottom: 16 }}>
+              <p style={{
+                fontFamily: "'Inter', sans-serif", fontSize: 10, color: 'rgba(44,30,34,0.4)',
+                letterSpacing: 3, textTransform: 'uppercase', marginBottom: 12,
+              }}>Suggested</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {PROMPTS.map(s => (
+                  <button key={s}
+                    onClick={() => { if (inputRef.current) inputRef.current.value = s; }}
+                    style={{
+                      fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 400,
+                      color: C.roseGold, padding: '5px 14px', borderRadius: 50, cursor: 'pointer',
+                      border: `1px solid rgba(183,110,121,0.3)`,
+                      background: 'rgba(248,200,220,0.15)', transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={e => e.target.style.background = 'rgba(183,110,121,0.18)'}
+                    onMouseLeave={e => e.target.style.background = 'rgba(248,200,220,0.15)'}
+                  >{s}</button>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <div style={{ maxHeight: 160, overflowY: 'auto', marginBottom: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {chatMessages.map((m, i) => (
+                <div key={i} style={{
+                  alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                  maxWidth: '82%', padding: '9px 14px', borderRadius: 14,
+                  background: m.role === 'user' ? `linear-gradient(135deg, ${C.richPink}, ${C.deepRose})` : 'rgba(255,255,255,0.6)',
+                  color: m.role === 'user' ? '#fff' : C.espresso,
+                  fontFamily: "'Inter', sans-serif", fontSize: 13, lineHeight: 1.65,
+                }}>{m.content}</div>
+              ))}
+              {chatLoading && <div style={{ color: C.roseGold, fontSize: 18, alignSelf: 'flex-start' }}>···</div>}
+            </div>
+          )}
 
-        {/* Chat log */}
-        {chatMessages.length > 0 && (
-          <div style={{
-            maxHeight: 180, overflowY: 'auto', marginBottom: 14,
-            display: 'flex', flexDirection: 'column', gap: 10,
-          }}>
-            {chatMessages.map((m, i) => (
-              <div key={i} style={{
-                alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
-                maxWidth: '82%',
-                background: m.role === 'user'
-                  ? 'linear-gradient(135deg, #B76E79, #c2185b)'
-                  : 'rgba(255,255,255,0.5)',
-                color: m.role === 'user' ? '#fff' : '#2C1E22',
-                padding: '9px 14px', borderRadius: 14,
-                fontFamily: "'Inter', sans-serif", fontSize: 13, lineHeight: 1.6,
-              }}>
-                {m.content}
-              </div>
-            ))}
-            {chatLoading && (
-              <div style={{ alignSelf: 'flex-start', color: '#B76E79', fontSize: 20 }}>
-                <span style={{ animation: 'ellipsis 1.4s infinite' }}>···</span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Input */}
-        <div style={{ position: 'relative', display: 'flex', gap: 10 }}>
-          <input
-            ref={inputRef}
-            placeholder="Detail your skin concerns…"
-            onKeyDown={e => e.key === 'Enter' && handleSend()}
-            style={{
-              flex: 1, padding: '12px 18px',
-              fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 300,
-              color: '#2C1E22', background: 'rgba(255,255,255,0.55)',
-              border: '1px solid rgba(183,110,121,0.28)',
-              borderRadius: 50, outline: 'none',
-              boxShadow: 'inset 0 1px 4px rgba(183,110,121,0.08)',
-              letterSpacing: 0.3,
-            }}
-          />
-          <button
-            onClick={handleSend}
-            style={{
-              width: 44, height: 44, borderRadius: '50%', border: 'none',
-              background: 'linear-gradient(135deg, #B76E79, #E8B4B8)',
-              color: '#fff', cursor: 'pointer', fontSize: 18,
-              boxShadow: '0 4px 16px rgba(183,110,121,0.4)',
-              transition: 'transform 0.2s, box-shadow 0.2s',
+          {/* Input */}
+          <div style={{ display: 'flex', gap: 10 }}>
+            <input
+              ref={inputRef}
+              placeholder="Detail your skin concerns…"
+              onKeyDown={e => e.key === 'Enter' && handleSend()}
+              style={{
+                flex: 1, padding: '12px 18px', borderRadius: 50,
+                fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 300,
+                color: C.espresso, letterSpacing: 0.3,
+                background: 'rgba(255,255,255,0.6)',
+                border: `1px solid rgba(183,110,121,0.3)`, outline: 'none',
+              }}
+            />
+            <button onClick={handleSend} style={{
+              width: 46, height: 46, borderRadius: '50%', border: 'none', cursor: 'pointer',
+              background: `linear-gradient(135deg, ${C.richPink}, ${C.roseGold})`,
+              color: '#fff', fontSize: 17,
+              boxShadow: '0 4px 18px rgba(194,24,91,0.35)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'transform 0.2s',
             }}
-            onMouseEnter={e => { e.target.style.transform = 'scale(1.08)'; }}
-            onMouseLeave={e => { e.target.style.transform = 'scale(1)'; }}
-          >
-            ✦
-          </button>
-        </div>
-        <p style={{
-          fontFamily: "'Inter', sans-serif", fontSize: 10, color: 'rgba(183,110,121,0.5)',
-          textAlign: 'center', marginTop: 10, letterSpacing: 1,
-        }}>
-          Powered by Kivara Intelligence · Personalized Beauty Rituals
-        </p>
-      </Glass>
+              onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+            >✦</button>
+          </div>
+        </Glass>
+      </div>
     </div>
   );
 }
 
-// ─── Zone 3: Reviews + CTA ───────────────────────────────────────────────────
+// ─── Zone 3: Reviews ──────────────────────────────────────────────────────────
 const REVIEWS = [
-  { name: 'Priya M.', product: 'Charlotte Tilbury Foundation', text: 'My skin has never looked more luminous. The coverage is divine, like a second skin.', rating: 5 },
-  { name: 'Anika S.', product: 'Rhode Peptide Lip Tint', text: 'Silky, hydrating, and the colour is just *chef\'s kiss*. I own four shades already.', rating: 5 },
-  { name: 'Roshni K.', product: 'Flower Knows Blush', text: 'The most beautiful compact I\'ve ever owned. That embossed design is museum-worthy.', rating: 5 },
-  { name: 'Meera D.', product: 'Gisou Honey Hair Oil', text: 'My hair is shinier than ever. The honey scent is absolutely intoxicating.', rating: 5 },
-  { name: 'Sana T.', product: 'Anua Niacinamide Serum', text: 'Glass skin in a bottle. Korean skincare at its absolute finest.', rating: 5 },
+  { name: 'Priya M.',  product: 'Charlotte Tilbury Foundation',   text: 'My skin has never looked more luminous — like wearing pure light.' },
+  { name: 'Anika S.',  product: 'Rhode Peptide Lip Tint',          text: 'Silky, hydrating perfection. I own four shades and counting.' },
+  { name: 'Roshni K.', product: 'Flower Knows Strawberry Rococo', text: 'The most beautiful compact I\'ve ever owned. Museum-worthy design.' },
+  { name: 'Sana T.',   product: 'Anua Niacinamide Serum',          text: 'Glass skin in a bottle. Korean skincare at its absolute finest.' },
+  { name: 'Meera D.',  product: 'Gisou Honey Hair Oil',            text: 'My hair is shinier than ever. The honey scent is intoxicating.' },
 ];
 
-function Zone3() {
-  const sectionRef = useRef();
-  const { activeZone } = useBeautyStore();
-  const visible = activeZone === 3;
+function Zone3({ visible }) {
+  const containerRef = useRef();
 
   useEffect(() => {
-    if (!sectionRef.current) return;
-    const cards = sectionRef.current.querySelectorAll('.review-card');
+    if (!containerRef.current) return;
+    const cards = containerRef.current.querySelectorAll('.rev-card');
     if (visible) {
+      gsap.fromTo(containerRef.current.querySelector('.zone3-head'),
+        { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
       gsap.fromTo(cards,
-        { opacity: 0, x: -40 },
-        { opacity: 1, x: 0, stagger: 0.12, duration: 0.9, ease: 'power3.out', delay: 0.2 }
-      );
+        { opacity: 0, x: -32 },
+        { opacity: 1, x: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out', delay: 0.2 });
     } else {
-      gsap.to(cards, { opacity: 0, duration: 0.3 });
+      gsap.to([containerRef.current.querySelector('.zone3-head'), ...cards], { opacity: 0, duration: 0.3 });
     }
   }, [visible]);
 
   return (
     <div
-      ref={sectionRef}
-      className="absolute inset-0 flex flex-col justify-center pointer-events-none"
-      style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.5s ease', paddingLeft: 48, paddingRight: 48 }}
+      ref={containerRef}
+      className="absolute inset-0 flex flex-col justify-center"
+      style={{
+        opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease',
+        pointerEvents: visible ? 'auto' : 'none',
+        padding: '0 48px',
+      }}
     >
-      <p style={{
-        fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: 10,
-        letterSpacing: 6, textTransform: 'uppercase', color: '#B76E79', marginBottom: 12,
-        pointerEvents: 'none',
-      }}>
-        Beloved by Thousands
-      </p>
-      <h2 style={{
-        fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 4vw, 3.2rem)',
-        fontWeight: 700, color: '#2C1E22', letterSpacing: '-0.02em',
-        marginBottom: 30, pointerEvents: 'none',
-      }}>
-        Voices of the{' '}
-        <em style={{
-          background: 'linear-gradient(135deg, #B76E79, #C5A059)',
-          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text', fontStyle: 'italic',
+      <div className="zone3-head" style={{ marginBottom: 28 }}>
+        <p style={{
+          fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: 10,
+          letterSpacing: 6, textTransform: 'uppercase', color: C.roseGold, marginBottom: 10,
+        }}>Beloved by Thousands</p>
+        <h2 style={{
+          fontFamily: "'Playfair Display', serif", fontWeight: 700,
+          fontSize: 'clamp(1.8rem, 4vw, 3rem)', color: C.espresso,
+          letterSpacing: '-0.02em', lineHeight: 1.1,
         }}>
-          Ethereal Court
-        </em>
-      </h2>
+          Voices of the{' '}
+          <em style={{
+            fontStyle: 'italic',
+            background: `linear-gradient(135deg, ${C.richPink}, ${C.brass})`,
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+          }}>Ethereal Court</em>
+        </h2>
+      </div>
 
-      {/* Horizontal scroll carousel */}
-      <div style={{ display: 'flex', gap: 16, overflowX: 'auto', paddingBottom: 8 }}>
-        {REVIEWS.map((r) => (
-          <div
-            key={r.name}
-            className="review-card"
-            style={{
-              minWidth: 260, maxWidth: 280, padding: '20px 22px',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.48), rgba(255,240,245,0.28))',
-              backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
-              border: '1px solid rgba(255,255,255,0.52)',
-              boxShadow: '0 8px 32px rgba(248,200,220,0.18)',
-              borderRadius: 20, pointerEvents: visible ? 'auto' : 'none',
-              flexShrink: 0,
-            }}
-          >
-            <div style={{ display: 'flex', gap: 3, marginBottom: 12 }}>
-              {[...Array(r.rating)].map((_, i) => <Star key={i} filled />)}
+      <div style={{ display: 'flex', gap: 14, overflowX: 'auto', paddingBottom: 6 }}>
+        {REVIEWS.map(r => (
+          <div key={r.name} className="rev-card" style={{
+            minWidth: 250, maxWidth: 270, flexShrink: 0,
+            padding: '18px 20px',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,240,245,0.32))',
+            backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
+            border: '1px solid rgba(255,255,255,0.62)',
+            boxShadow: '0 6px 28px rgba(183,110,121,0.14)',
+            borderRadius: 18,
+          }}>
+            <div style={{ display: 'flex', gap: 2, marginBottom: 10 }}>
+              {[...Array(5)].map((_, i) => <Star key={i} />)}
             </div>
             <p style={{
               fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 300,
-              color: '#2C1E22', lineHeight: 1.7, marginBottom: 14, fontStyle: 'italic',
-            }}>
-              "{r.text}"
-            </p>
-            <div>
-              <p style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 13, color: '#B76E79' }}>
-                {r.name}
-              </p>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: 'rgba(44,30,34,0.45)', marginTop: 2, letterSpacing: 0.5 }}>
-                {r.product}
-              </p>
-            </div>
+              color: C.espresso, lineHeight: 1.7, marginBottom: 12, fontStyle: 'italic',
+            }}>"{r.text}"</p>
+            <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, fontWeight: 700, color: C.roseGold }}>{r.name}</p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: 'rgba(44,30,34,0.4)', marginTop: 2, letterSpacing: 0.4 }}>{r.product}</p>
           </div>
         ))}
       </div>
 
-      {/* CTA */}
-      <div style={{ marginTop: 32, display: 'flex', gap: 14, pointerEvents: visible ? 'auto' : 'none' }}>
+      <div style={{ marginTop: 28, display: 'flex', gap: 14 }}>
         <Link to="/shop" style={{
-          fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 600,
-          letterSpacing: 3, textTransform: 'uppercase', textDecoration: 'none',
-          color: '#fff', padding: '13px 32px', borderRadius: 50,
-          background: 'linear-gradient(135deg, #B76E79, #E8B4B8)',
-          boxShadow: '0 8px 28px rgba(183,110,121,0.35)',
+          display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none',
+          padding: '13px 32px', borderRadius: 50,
+          fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11,
+          letterSpacing: 2.5, textTransform: 'uppercase', color: '#fff',
+          background: `linear-gradient(135deg, ${C.richPink}, ${C.deepRose})`,
+          boxShadow: '0 8px 28px rgba(194,24,91,0.35)',
           transition: 'transform 0.2s, box-shadow 0.2s',
         }}
-          onMouseEnter={e => { e.target.style.transform = 'scale(1.04)'; e.target.style.boxShadow = '0 12px 36px rgba(183,110,121,0.5)'; }}
-          onMouseLeave={e => { e.target.style.transform = 'scale(1)'; e.target.style.boxShadow = '0 8px 28px rgba(183,110,121,0.35)'; }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = '0 14px 40px rgba(194,24,91,0.5)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(194,24,91,0.35)'; }}
         >
-          Enter the Collection
+          Enter the Collection ✦
         </Link>
       </div>
     </div>
   );
 }
 
-// ─── Sticky nav bar ───────────────────────────────────────────────────────────
+// ─── Glassmorphic navbar ──────────────────────────────────────────────────────
 function EtherealNav() {
   return (
     <nav style={{
-      position: 'absolute', top: 24, left: '50%', transform: 'translateX(-50%)',
-      zIndex: 50, pointerEvents: 'auto',
-      background: 'linear-gradient(135deg, rgba(255,255,255,0.45), rgba(255,240,245,0.25))',
-      backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
-      border: '1px solid rgba(255,255,255,0.55)',
-      boxShadow: '0 8px 32px rgba(248,200,220,0.18)',
-      borderRadius: 50, padding: '10px 28px',
-      display: 'flex', alignItems: 'center', gap: 32, whiteSpace: 'nowrap',
+      position: 'absolute', top: 22, left: '50%', transform: 'translateX(-50%)',
+      zIndex: 50, pointerEvents: 'auto', whiteSpace: 'nowrap',
+      background: 'linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,240,245,0.32))',
+      backdropFilter: 'blur(22px) saturate(200%)', WebkitBackdropFilter: 'blur(22px) saturate(200%)',
+      border: '1px solid rgba(255,255,255,0.65)',
+      boxShadow: '0 8px 36px rgba(183,110,121,0.14)',
+      borderRadius: 50, padding: '10px 26px',
+      display: 'flex', alignItems: 'center', gap: 28,
     }}>
       <Link to="/" style={{
-        fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 17,
-        color: '#2C1E22', textDecoration: 'none', letterSpacing: '-0.01em',
-      }}>
-        Kivara
-      </Link>
-      {[
-        ['Shop All', '/shop'],
-        ['Lips', '/shop?category=Lips'],
-        ['Skincare', '/shop?category=Skincare'],
-        ['Hair Care', '/shop?category=Hair+Care'],
-      ].map(([label, href]) => (
+        fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 18,
+        color: C.espresso, textDecoration: 'none', letterSpacing: '-0.01em',
+      }}>Kivara</Link>
+
+      {[['Shop All', '/shop'], ['Lips', '/shop?category=Lips'], ['Skincare', '/shop?category=Skincare'], ['Hair Care', '/shop?category=Hair+Care']].map(([label, href]) => (
         <Link key={href} to={href} style={{
           fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: 12,
-          color: '#B76E79', textDecoration: 'none', letterSpacing: 2,
-          textTransform: 'uppercase', transition: 'color 0.2s',
+          color: C.roseGold, textDecoration: 'none',
+          letterSpacing: 2, textTransform: 'uppercase', transition: 'color 0.2s',
         }}
-          onMouseEnter={e => e.target.style.color = '#2C1E22'}
-          onMouseLeave={e => e.target.style.color = '#B76E79'}
-        >
-          {label}
-        </Link>
+          onMouseEnter={e => e.target.style.color = C.espresso}
+          onMouseLeave={e => e.target.style.color = C.roseGold}
+        >{label}</Link>
       ))}
+
       <Link to="/login" style={{
-        fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: 11,
-        color: '#fff', padding: '7px 20px', borderRadius: 50, textDecoration: 'none',
-        background: 'linear-gradient(135deg, #B76E79, #E8B4B8)',
+        fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: 11,
+        color: '#fff', padding: '8px 20px', borderRadius: 50, textDecoration: 'none',
+        background: `linear-gradient(135deg, ${C.richPink}, ${C.deepRose})`,
         letterSpacing: 1.5, textTransform: 'uppercase',
-      }}>
-        Account
-      </Link>
+        boxShadow: '0 4px 16px rgba(194,24,91,0.3)',
+      }}>Account</Link>
     </nav>
   );
 }
 
-// ─── Root scroll experience ───────────────────────────────────────────────────
+// ─── Root export ──────────────────────────────────────────────────────────────
 export default function ScrollDOMOverlay({ scrollContainerRef }) {
   const setScrollProgress = useBeautyStore(s => s.setScrollProgress);
   const setMouseNorm      = useBeautyStore(s => s.setMouseNorm);
+  const activeZone        = useBeautyStore(s => s.activeZone);
 
-  // GSAP ScrollTrigger
   useEffect(() => {
     if (!scrollContainerRef?.current) return;
-
     const trigger = ScrollTrigger.create({
       trigger: scrollContainerRef.current,
       start: 'top top',
       end: 'bottom bottom',
       scrub: 1.5,
-      onUpdate: (self) => setScrollProgress(self.progress),
+      onUpdate: self => setScrollProgress(self.progress),
     });
-
     return () => trigger.kill();
   }, []);
 
-  // Mouse normalisation
   useEffect(() => {
-    const handler = (e) => {
-      setMouseNorm(
-        (e.clientX / window.innerWidth)  * 2 - 1,
-        (e.clientY / window.innerHeight) * 2 - 1,
-      );
-    };
+    const handler = e => setMouseNorm(
+      (e.clientX / window.innerWidth)  * 2 - 1,
+      (e.clientY / window.innerHeight) * 2 - 1,
+    );
     window.addEventListener('mousemove', handler, { passive: true });
     return () => window.removeEventListener('mousemove', handler);
   }, []);
 
   return (
-    /* This div is sticky — lives inside the tall scroll container */
     <div style={{ position: 'sticky', top: 0, height: '100vh', width: '100%', overflow: 'hidden' }}>
-      {/* Navbar always visible */}
       <EtherealNav />
-
-      {/* Zone overlays */}
-      <Zone0 />
-      <Zone1 />
-      <Zone2 />
-      <Zone3 />
+      <Zone0 visible={activeZone === 0} />
+      <Zone1 visible={activeZone === 1} />
+      <Zone2 visible={activeZone === 2} />
+      <Zone3 visible={activeZone === 3} />
     </div>
   );
 }

@@ -8,7 +8,9 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Inter', sans-serif;
-    @apply text-lb-black bg-lb-white antialiased;
+    @apply text-lb-black antialiased;
+    background: linear-gradient(160deg, #FFF0F5 0%, #FAFAFA 50%, #FFF8F5 100%);
+    background-attachment: fixed;
   }
   h1, h2, h3, h4, h5 { font-family: 'Playfair Display', serif; }
 }
@@ -107,4 +109,17 @@
 @keyframes pulse {
   0%, 100% { opacity: 0.35; transform: scale(1); }
   50%       { opacity: 0.6; transform: scale(1.4); }
+}
+
+/* ── Float gentle (palette image) ── */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px) rotate(0.3deg); }
+  33%       { transform: translateY(-10px) rotate(-0.3deg); }
+  66%       { transform: translateY(-6px) rotate(0.2deg); }
+}
+
+/* ── Float slow (sparkle decorators) ── */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(-3deg); }
+  50%       { transform: translateY(-12px) rotate(3deg); }
 }

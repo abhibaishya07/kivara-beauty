@@ -50,3 +50,32 @@
 ::-webkit-scrollbar-track { background: #FFE0EF; }
 ::-webkit-scrollbar-thumb { background: #FF1493; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #D1006E; }
+
+/* ── Marquee ── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* ── Float animations ── */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(-2deg); }
+  50%       { transform: translateY(-14px) rotate(2deg); }
+}
+@keyframes float-med {
+  0%, 100% { transform: translateY(0px) rotate(1deg); }
+  50%       { transform: translateY(-10px) rotate(-1deg); }
+}
+.animate-float-slow { animation: float-slow 5s ease-in-out infinite; }
+.animate-float-med  { animation: float-med 3.5s ease-in-out infinite; }
+
+/* ── fadeIn ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn 0.7s ease-out both; }
+

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -79,3 +79,32 @@
 }
 .animate-fadeIn { animation: fadeIn 0.7s ease-out both; }
 
+/* ── Spin (loader ring) ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spinReverse { to { transform: rotate(-360deg); } }
+
+/* ── Pulse glow (AI dot) ── */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(183,110,121,0.4); }
+  50%       { opacity: 0.6; box-shadow: 0 0 0 6px rgba(183,110,121,0); }
+}
+
+/* ── Bounce gentle (scroll cue) ── */
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+.animate-bounce-gentle { animation: bounce-gentle 2.2s ease-in-out infinite; }
+
+/* ── Ellipsis (chat loading) ── */
+@keyframes ellipsis {
+  0%, 20%  { opacity: 1; }
+  40%       { opacity: 0.3; }
+  60%, 100% { opacity: 1; }
+}
+
+/* ── Pulse generic ── */
+@keyframes pulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.4); }
+}

@@ -10,6 +10,11 @@ gsap.registerPlugin(ScrollTrigger);
 // ─── Pinterest image ──────────────────────────────────────────────────────────
 const FLOWER_KNOWS_IMG = 'https://i.pinimg.com/736x/3d/f6/d3/3df6d3136158907d900be51d2f5e3b9d.jpg';
 
+// ─── Pinterest/Instagram reel video (Flower Knows unboxing) ──────────────────
+// Source: https://pin.it/45fm5hIBU → Instagram reel by @lisasdiary12_
+// CDN expires: ~January 2027 (oe=69E4B717 hex)
+const FLOWER_KNOWS_VIDEO = 'https://scontent-dfw6-1.cdninstagram.com/o1/v/t2/f2/m86/AQMA2roCY8ar2VKg9hB0goKi1gc3HFKFoa-s5_fBL7vesVLQXTbxuZS2mZfz0Q3_v5iuY3_JpF4yTNnEnpQJfSQDgabo496Z7wX6x80.mp4?_nc_cat=106&_nc_sid=5e9851&_nc_ht=scontent-dfw6-1.cdninstagram.com&_nc_ohc=nxOZ3KsMdnYQ7kNvwH_3cbW&ccb=17-1&vs=3b8a4d796b818d9e&_nc_gid=KNSpwrBiGw1G1foY6NhOZQ&_nc_ss=7a289&_nc_zt=28&oh=00_Af1fg17I5BH1hynqXFWZ3q0brkuU82ZxDjGg9QmlyqLvBg&oe=69E4B717';
+
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const C = {
   roseGold:  '#B76E79',
@@ -44,138 +49,176 @@ const Star = () => (
   </svg>
 );
 
-// ─── Floating Flower Knows image with glow ─────────────────────────────────
+// ─── Hero right panel: 2-column collage (image + video) ─────────────────────
 function FlowerKnowsPaletteDisplay({ visible }) {
-  const imgRef = useRef();
+  const wrapRef = useRef();
+  const videoRef = useRef();
 
   useEffect(() => {
-    if (!imgRef.current) return;
-    // If visible in zone 0 or 1, show it; fade out in zones 2+
+    if (!wrapRef.current) return;
     if (visible) {
-      gsap.to(imgRef.current, { opacity: 1, scale: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.4 });
+      gsap.to(wrapRef.current, { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'power3.out', delay: 0.35 });
+      // Autoplay video when zone appears
+      if (videoRef.current) {
+        videoRef.current.play().catch(() => {});
+      }
     } else {
-      gsap.to(imgRef.current, { opacity: 0, scale: 0.92, y: 20, duration: 0.5, ease: 'power2.in' });
+      gsap.to(wrapRef.current, { opacity: 0, y: 20, scale: 0.96, duration: 0.45, ease: 'power2.in' });
     }
   }, [visible]);
 
   return (
     <div
-      ref={imgRef}
+      ref={wrapRef}
       style={{
-        position: 'relative',
         width: '100%',
-        maxWidth: 400,
-        margin: '0 auto',
+        maxWidth: 500,
         opacity: 0,
         transform: 'translateY(20px) scale(0.96)',
       }}
     >
-      {/* Soft radial glow behind image */}
+      {/* Outer glow blob */}
       <div style={{
         position: 'absolute',
-        inset: -40,
-        borderRadius: '50%',
-        background: 'radial-gradient(ellipse at center, rgba(194,24,91,0.22) 0%, rgba(183,110,121,0.15) 40%, transparent 70%)',
-        filter: 'blur(24px)',
-        zIndex: 0,
-        animation: 'pulseGlow 3s ease-in-out infinite',
-      }} />
-
-      {/* Decorative ring */}
-      <div style={{
-        position: 'absolute',
-        inset: -14,
-        borderRadius: 28,
-        border: '1px solid rgba(183,110,121,0.25)',
-        zIndex: 0,
-      }} />
-      <div style={{
-        position: 'absolute',
-        inset: -28,
-        borderRadius: 36,
-        border: '1px solid rgba(197,160,89,0.15)',
+        inset: -60,
+        background: 'radial-gradient(ellipse at 60% 50%, rgba(194,24,91,0.14) 0%, transparent 70%)',
+        filter: 'blur(30px)',
+        pointerEvents: 'none',
         zIndex: 0,
       }} />
 
-      {/* Sparkle decorations */}
-      {[
-        { top: -18, left: '15%', size: 16, delay: 0 },
-        { top: -12, right: '20%', size: 12, delay: 0.4 },
-        { bottom: -16, left: '25%', size: 10, delay: 0.8 },
-        { top: '30%', right: -20, size: 14, delay: 0.2 },
-        { top: '60%', left: -20, size: 11, delay: 0.6 },
-      ].map((pos, i) => (
-        <div key={i} style={{
-          position: 'absolute',
-          zIndex: 3,
-          animation: `float-slow ${2.5 + i * 0.4}s ease-in-out infinite`,
-          animationDelay: `${pos.delay}s`,
-          top: pos.top, bottom: pos.bottom, left: pos.left, right: pos.right,
-        }}>
-          <svg width={pos.size} height={pos.size} viewBox="0 0 24 24" fill="#C5A059" opacity="0.8">
-            <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41Z" />
-          </svg>
-        </div>
-      ))}
-
-      {/* The actual image */}
+      {/* ── 2-column collage grid ── */}
       <div style={{
-        position: 'relative', zIndex: 1,
-        borderRadius: 24,
-        overflow: 'hidden',
-        boxShadow: '0 24px 80px rgba(194,24,91,0.2), 0 8px 32px rgba(0,0,0,0.08)',
-        animation: 'float-gentle 5s ease-in-out infinite',
+        position: 'relative',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: 14,
+        alignItems: 'start',
+        zIndex: 1,
       }}>
-        <img
-          src={FLOWER_KNOWS_IMG}
-          alt="Flower Knows Dreamy Palette Collection"
-          onError={(e) => {
-            e.target.src = 'https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg?auto=compress&cs=tinysrgb&w=800';
-          }}
-          style={{
-            width: '100%',
-            height: 'auto',
-            display: 'block',
-            objectFit: 'cover',
-          }}
-        />
-        {/* Shimmer overlay */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(183,110,121,0.04) 100%)',
-          pointerEvents: 'none',
-        }} />
-      </div>
 
-      {/* Floating badge */}
-      <div style={{
-        position: 'absolute',
-        bottom: -16,
-        right: 16,
-        zIndex: 4,
-      }}>
-        <Glass style={{ padding: '8px 16px', borderRadius: 50 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            {[1,2,3,4,5].map(i => <Star key={i} />)}
-            <span style={{
-              fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600,
-              color: C.espresso, marginLeft: 4, letterSpacing: 0.5,
-            }}>4.9</span>
-          </div>
-        </Glass>
-      </div>
-
-      {/* Brand pill */}
-      <div style={{ position: 'absolute', top: -16, left: 16, zIndex: 4 }}>
-        <Glass style={{ padding: '6px 14px', borderRadius: 50 }}>
-          <span style={{
-            fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700,
-            color: C.deepRose, letterSpacing: 3, textTransform: 'uppercase',
+        {/* ── LEFT: Flower Knows Palette Image ── */}
+        <div style={{ position: 'relative', animation: 'float-gentle 5s ease-in-out infinite' }}>
+          {/* Brand pill */}
+          <div style={{
+            position: 'absolute', top: -14, left: 10, zIndex: 4,
           }}>
-            ✦ Flower Knows
-          </span>
-        </Glass>
+            <Glass style={{ padding: '5px 12px', borderRadius: 50 }}>
+              <span style={{
+                fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 700,
+                color: C.deepRose, letterSpacing: 2.5, textTransform: 'uppercase',
+              }}>✦ Flower Knows</span>
+            </Glass>
+          </div>
+
+          {/* Image */}
+          <div style={{
+            borderRadius: 20,
+            overflow: 'hidden',
+            boxShadow: '0 20px 60px rgba(194,24,91,0.18), 0 6px 20px rgba(0,0,0,0.06)',
+          }}>
+            <img
+              src={FLOWER_KNOWS_IMG}
+              alt="Flower Knows Dreamy Makeup Flat Lay"
+              onError={e => { e.target.src = 'https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg?auto=compress&cs=tinysrgb&w=600'; }}
+              style={{
+                width: '100%', height: 380, objectFit: 'cover', display: 'block',
+              }}
+            />
+            {/* Shimmer */}
+            <div style={{
+              position: 'absolute', inset: 0, borderRadius: 20,
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.07), transparent 60%, rgba(183,110,121,0.04))',
+              pointerEvents: 'none',
+            }} />
+          </div>
+
+          {/* Stars badge */}
+          <div style={{ position: 'absolute', bottom: -14, right: 10, zIndex: 4 }}>
+            <Glass style={{ padding: '6px 12px', borderRadius: 50 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                {[1,2,3,4,5].map(i => <Star key={i} />)}
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700, color: C.espresso, marginLeft: 3 }}>4.9</span>
+              </div>
+            </Glass>
+          </div>
+        </div>
+
+        {/* ── RIGHT: Flower Knows Reel Video ── */}
+        <div style={{
+          position: 'relative',
+          marginTop: 28,   /* offset for stagger effect */
+          animation: 'float-gentle 5.5s ease-in-out infinite',
+          animationDelay: '0.8s',
+        }}>
+          {/* Reel badge */}
+          <div style={{ position: 'absolute', top: -14, left: 10, zIndex: 4 }}>
+            <Glass style={{ padding: '5px 12px', borderRadius: 50 }}>
+              <span style={{
+                fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 700,
+                color: C.richPink, letterSpacing: 2, textTransform: 'uppercase',
+                display: 'flex', alignItems: 'center', gap: 5,
+              }}>
+                <span style={{
+                  width: 7, height: 7, borderRadius: '50%', background: C.richPink,
+                  animation: 'pulseGlow 1.5s ease-in-out infinite',
+                  flexShrink: 0, display: 'inline-block',
+                }} />
+                Live Reel
+              </span>
+            </Glass>
+          </div>
+
+          {/* Video */}
+          <div style={{
+            borderRadius: 20, overflow: 'hidden',
+            boxShadow: '0 20px 60px rgba(194,24,91,0.15), 0 6px 20px rgba(0,0,0,0.08)',
+            background: 'rgba(248,200,220,0.2)',
+          }}>
+            <video
+              ref={videoRef}
+              src={FLOWER_KNOWS_VIDEO}
+              autoPlay
+              loop
+              muted
+              playsInline
+              style={{
+                width: '100%', height: 330, objectFit: 'cover', display: 'block',
+                borderRadius: 20,
+              }}
+            />
+            {/* Shimmer overlay */}
+            <div style={{
+              position: 'absolute', inset: 0, borderRadius: 20,
+              background: 'linear-gradient(to bottom, transparent 60%, rgba(194,24,91,0.06))',
+              pointerEvents: 'none',
+            }} />
+          </div>
+
+          {/* View label */}
+          <div style={{ position: 'absolute', bottom: -14, right: 10, zIndex: 4 }}>
+            <Glass style={{ padding: '5px 12px', borderRadius: 50 }}>
+              <span style={{
+                fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 700,
+                color: C.espresso, letterSpacing: 2, textTransform: 'uppercase',
+              }}>✦ Unboxing</span>
+            </Glass>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom decorative sparkles row */}
+      <div style={{
+        display: 'flex', justifyContent: 'center', gap: 18, marginTop: 28,
+      }}>
+        {['✦', '🌸', '✦', '💫', '✦'].map((s, i) => (
+          <span key={i} style={{
+            color: i % 2 === 0 ? C.brass : C.richPink,
+            fontSize: i === 1 || i === 3 ? 14 : 10, opacity: 0.65,
+            animation: `float-slow ${2 + i * 0.3}s ease-in-out infinite`,
+            animationDelay: `${i * 0.25}s`,
+          }}>{s}</span>
+        ))}
       </div>
     </div>
   );
@@ -209,7 +252,7 @@ function Zone0({ visible }) {
       }}
     >
       {/* Left — text */}
-      <div ref={textRef} style={{ flex: 1, paddingRight: 40, maxWidth: 560 }}>
+      <div ref={textRef} style={{ flex: 1, paddingRight: 24, maxWidth: 520 }}>
         <p style={{
           fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: 11,
           letterSpacing: 6, textTransform: 'uppercase', color: C.roseGold, marginBottom: 20,
@@ -307,9 +350,9 @@ function Zone0({ visible }) {
         </div>
       </div>
 
-      {/* Right — Flower Knows palette */}
+      {/* Right — Flower Knows 2-column collage */}
       <div ref={rightRef} style={{
-        flex: '0 0 auto', width: 'min(420px, 40vw)',
+        flex: '0 0 auto', width: 'min(560px, 48vw)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <FlowerKnowsPaletteDisplay visible={visible} />

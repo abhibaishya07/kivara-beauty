@@ -119,67 +119,73 @@ function PaletteHero({ visible, mobile }) {
     );
   }
 
-  // Desktop: 3-brand editorial 2-column collage
+  // Desktop: 3 images in a horizontal row — Flower Knows | Charlotte Tilbury | Rhode
   return (
     <div ref={ref} style={{ position: 'relative', width: '100%', opacity: 0, transform: 'translateY(18px) scale(0.96)' }}>
       {/* Ambient glow */}
-      <div style={{ position: 'absolute', inset: -40, zIndex: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 60% 50%, rgba(194,24,91,0.12) 0%, transparent 70%)', filter: 'blur(28px)' }} />
+      <div style={{ position: 'absolute', inset: -40, zIndex: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 50% 50%, rgba(194,24,91,0.11) 0%, transparent 70%)', filter: 'blur(30px)' }} />
 
       {/* Floating sparkles */}
-      {[['-8%', '8%', 12], ['107%', '22%', 9], ['-4%', '72%', 10], ['104%', '68%', 8]].map(([l, t, s], i) => (
+      {[['-5%', '5%', 11], ['103%', '18%', 9], ['-3%', '80%', 10], ['102%', '75%', 8]].map(([l, t, s], i) => (
         <div key={i} style={{ position: 'absolute', left: l, top: t, zIndex: 3, animation: `float-slow ${2.8 + i * 0.4}s ease-in-out infinite`, animationDelay: `${i * 0.3}s` }}>
-          <svg width={s} height={s} viewBox="0 0 24 24" fill="#C5A059" opacity="0.75">
+          <svg width={s} height={s} viewBox="0 0 24 24" fill="#C5A059" opacity="0.7">
             <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41Z" />
           </svg>
         </div>
       ))}
 
-      {/* 2-column editorial grid */}
-      <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1.05fr 0.95fr', gap: 14, alignItems: 'start' }}>
-        {/* LEFT: Flower Knows — tall hero card */}
-        <BrandCard
-          src={FLOWER_KNOWS_IMG}
-          alt="Flower Knows Dreamy Makeup Flat Lay"
-          brand="Flower Knows"
-          badge="★★★★★ 4.9"
-          height={420}
-          glowColor="rgba(194,24,91,0.18)"
-          animDelay="0s"
-        />
+      {/* 3-column horizontal row */}
+      <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, alignItems: 'end' }}>
 
-        {/* RIGHT: CT top + Rhode bottom, staggered */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 40 }}>
+        {/* LEFT: Flower Knows */}
+        <div style={{ marginBottom: 20 }}>
+          <BrandCard
+            src={FLOWER_KNOWS_IMG}
+            alt="Flower Knows Dreamy Makeup Flat Lay"
+            brand="Flower Knows"
+            badge="★★★★★ 4.9"
+            height={320}
+            glowColor="rgba(194,24,91,0.18)"
+            animDelay="0s"
+          />
+        </div>
+
+        {/* CENTER: Charlotte Tilbury — tallest, anchors the row */}
+        <div style={{ marginBottom: 0 }}>
           <BrandCard
             src={CT_IMG}
             alt="Charlotte Tilbury Beautiful Skin Foundation"
             brand="Charlotte Tilbury"
             badge="✦ Foundation"
-            height={188}
+            height={370}
             glowColor="rgba(197,160,89,0.18)"
-            animDelay="0.55s"
+            animDelay="0.4s"
           />
+        </div>
+
+        {/* RIGHT: Rhode */}
+        <div style={{ marginBottom: 40 }}>
           <BrandCard
             src={RHODE_IMG}
             alt="Rhode Peptide Lip Tint Raspberry Jelly"
             brand="Rhode"
             badge="Lip Tint ✦"
-            height={188}
+            height={300}
             glowColor="rgba(183,110,121,0.2)"
-            animDelay="1.1s"
+            animDelay="0.8s"
           />
         </div>
       </div>
 
       {/* Decorative sparkle row */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 22, position: 'relative', zIndex: 2 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 18, position: 'relative', zIndex: 2 }}>
         {['✦', '🌸', '✦', '💫', '✦'].map((s, i) => (
-          <span key={i} style={{ color: i % 2 === 0 ? C.brass : C.richPink, fontSize: i === 1 || i === 3 ? 13 : 9, opacity: 0.6, animation: `float-slow ${2 + i * 0.3}s ease-in-out infinite`, animationDelay: `${i * 0.25}s` }}>{s}</span>
+          <span key={i} style={{ color: i % 2 === 0 ? C.brass : C.richPink, fontSize: i === 1 || i === 3 ? 13 : 9, opacity: 0.55, animation: `float-slow ${2 + i * 0.3}s ease-in-out infinite`, animationDelay: `${i * 0.25}s` }}>{s}</span>
         ))}
       </div>
     </div>
   );
 }
-
 
 // ─── Zone 0: Hero ─────────────────────────────────────────────────────────────
 function Zone0({ visible }) {
@@ -312,10 +318,10 @@ function Zone0({ visible }) {
         )}
       </div>
 
-      {/* Desktop: 3-brand collage on right */}
+      {/* Desktop: 3-brand horizontal row on right */}
       {!mobile && (
         <div ref={imgRef} style={{
-          flexShrink: 0, width: 'min(520px, 47vw)',
+          flexShrink: 0, width: 'min(620px, 58vw)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <PaletteHero visible={visible} mobile={false} />

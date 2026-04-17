@@ -25,7 +25,7 @@ export default function Footer() {
             <li><Link to="/policies#shipping" className="hover:text-white transition-colors">Shipping Policy</Link></li>
             <li><Link to="/policies#returns" className="hover:text-white transition-colors">Return Policy</Link></li>
             <li><a href="#" className="hover:text-white transition-colors">Track Order</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+            <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
           </ul>
         </div>
         <div>

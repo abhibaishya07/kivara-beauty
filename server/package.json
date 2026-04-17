@@ -1,7 +1,7 @@
 {
-  "name": "lumiere-beauty-server",
+  "name": "kivara-beauty-server",
   "version": "1.0.0",
-  "description": "Lumière Beauty MERN E-Commerce Backend",
+  "description": "Kivara Beauty MERN E-Commerce Backend",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

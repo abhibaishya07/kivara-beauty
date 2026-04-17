@@ -127,7 +127,7 @@ const seedDB = async () => {
     console.log(`✅ Seeded ${products.length} products`);
 
     // Upsert admin user
-    const adminEmail = 'admin@lumiere.com';
+    const adminEmail = 'admin@kivara.com';
     const existingAdmin = await User.findOne({ email: adminEmail });
     if (!existingAdmin) {
       await User.create({
@@ -136,7 +136,7 @@ const seedDB = async () => {
         password: 'Admin@1234',
         role: 'admin',
       });
-      console.log('✅ Admin user created: admin@lumiere.com / Admin@1234');
+      console.log('✅ Admin user created: admin@kivara.com / Admin@1234');
     } else {
       console.log('ℹ️  Admin user already exists');
     }

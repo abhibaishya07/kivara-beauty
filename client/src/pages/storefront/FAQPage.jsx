@@ -143,7 +143,7 @@ export default function FAQPage() {
             <p className="text-white/80 text-sm mb-6 max-w-md mx-auto">
               Our beauty advisors are here for you. Don't hesitate to reach out if you have any more questions about your routine or your orders.
             </p>
-            <a href="mailto:support@lumierebeauty.com" className="inline-block bg-white text-lb-rose font-bold text-xs tracking-widest uppercase px-8 py-3 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
+            <a href="mailto:support@kivarabeauty.com" className="inline-block bg-white text-lb-rose font-bold text-xs tracking-widest uppercase px-8 py-3 rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
               Contact Support
             </a>
           </div>

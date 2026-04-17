@@ -19,6 +19,7 @@ import AccountPage from './pages/storefront/AccountPage';
 import GlowBotPage from './pages/storefront/GlowBotPage';
 import FAQPage from './pages/storefront/FAQPage';
 import PoliciesPage from './pages/storefront/PoliciesPage';
+import ContactPage from './pages/storefront/ContactPage';
 import KrizmaWidget from './components/layout/KrizmaWidget';
 
 // Admin
@@ -53,6 +54,7 @@ export default function App() {
               <Route path="/glowbot"    element={<GlowBotPage />} />
               <Route path="/faq"        element={<FAQPage />} />
               <Route path="/policies"   element={<PoliciesPage />} />
+              <Route path="/contact"    element={<ContactPage />} />
 
               {/* Admin Portal */}
               <Route path="/admin/login" element={<AdminLoginPage />} />

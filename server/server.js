@@ -25,9 +25,9 @@ app.use('/api/payment',   require('./routes/paymentRoutes'));
 app.use('/api/glowbot',   require('./routes/glowbotRoutes'));
 app.use('/api/krizma',    require('./routes/krizmaRoutes'));
 
-app.get('/api/health', (_, res) => res.json({ status: 'OK', app: 'Lumière Beauty API' }));
+app.get('/api/health', (_, res) => res.json({ status: 'OK', app: 'Kivara Beauty API' }));
 
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`\n✨ Lumière Beauty Server running on port ${PORT}\n`));
+app.listen(PORT, () => console.log(`\n✨ Kivara Beauty Server running on port ${PORT}\n`));

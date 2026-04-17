@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
           <div>
             <label className="block text-xs tracking-widest uppercase font-semibold text-gray-600 mb-1.5">Email</label>
             <input name="email" type="email" required value={form.email} onChange={handle}
-              className="input-field" placeholder="admin@lumiere.com" autoFocus />
+              className="input-field" placeholder="admin@kivara.com" autoFocus />
           </div>
           <div>
             <label className="block text-xs tracking-widest uppercase font-semibold text-gray-600 mb-1.5">Password</label>
@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
         </form>
 
         <p className="text-center text-xs text-gray-400 mt-8">
-          Default: admin@lumiere.com / Admin@1234
+          Default: admin@kivara.com / Admin@1234
         </p>
       </div>
     </div>

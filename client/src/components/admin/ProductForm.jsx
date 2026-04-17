@@ -81,7 +81,7 @@ export default function ProductForm({ product, onClose, onSaved }) {
             {CATEGORIES.map(c => <option key={c}>{c}</option>)}
           </select>
         </div>
-        <Field label="Brand" name="brand" placeholder="e.g. Lumière" />
+        <Field label="Brand" name="brand" placeholder="e.g. Kivara" />
       </div>
 
       <div className="grid grid-cols-2 gap-4">

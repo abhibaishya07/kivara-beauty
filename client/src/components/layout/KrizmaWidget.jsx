@@ -67,7 +67,7 @@ export default function KrizmaWidget() {
     } catch {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "I'm having trouble connecting right now. Please email us at **support@lumierebeauty.com** and we'll get back to you shortly! 💌"
+        content: "I'm having trouble connecting right now. Please email us at **support@kivarabeauty.com** and we'll get back to you shortly! 💌"
       }]);
     } finally {
       setIsTyping(false);
@@ -171,7 +171,7 @@ export default function KrizmaWidget() {
           {/* Footer */}
           <div className="bg-white border-t border-lb-border/50 px-4 py-2 text-center flex-shrink-0">
             <p className="text-[10px] text-gray-400">
-              Powered by Lumière AI · <Link to="/faq" onClick={() => setIsOpen(false)} className="text-lb-rose hover:underline">FAQ</Link> · <Link to="/policies" onClick={() => setIsOpen(false)} className="text-lb-rose hover:underline">Policies</Link>
+              Powered by Kivara AI · <Link to="/faq" onClick={() => setIsOpen(false)} className="text-lb-rose hover:underline">FAQ</Link> · <Link to="/policies" onClick={() => setIsOpen(false)} className="text-lb-rose hover:underline">Policies</Link>
             </p>
           </div>
         </div>

@@ -44,7 +44,7 @@ export default function HeroBanner() {
                 alt="Lipstick" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
             </div>
             <div className="h-1/3 overflow-hidden bg-lb-black">
-              <img src="https://images.unsplash.com/photo-1512207736890-6ffed8a84e8d?auto=format&fit=crop&w=600&q=80"
+              <img src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=600&q=80"
                 alt="Palette" className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity duration-500" />
             </div>
           </div>

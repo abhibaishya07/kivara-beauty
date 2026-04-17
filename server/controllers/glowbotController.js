@@ -16,7 +16,7 @@ exports.consult = async (req, res) => {
       products.map(p => ({
         id: p._id,
         name: p.name,
-        brand: p.brand || 'Lumière',
+        brand: p.brand || 'Kivara',
         category: p.category,
         description: (p.description || '').slice(0, 120),
         price: p.price,

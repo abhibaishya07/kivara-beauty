@@ -53,7 +53,42 @@ const Star = () => (
   </svg>
 );
 
-// ─── Palette image (single, clean) ───────────────────────────────────────────
+// ─── Verified brand image URLs (from Kivara seed database) ───────────────────
+const RHODE_IMG = 'https://cdn.shopify.com/s/files/1/0972/2816/1387/files/af52944fa9696b1b54007a3f3f8ea6bf9af37fd9.png?v=1774408120';
+const CT_IMG    = 'https://cdn.shopify.com/s/files/1/0972/2816/1387/files/cf428c5b1a9aabe81076f8dcddf29f624403b34b.png?v=1774422775';
+
+// ─── Reusable brand card ──────────────────────────────────────────────────────
+function BrandCard({ src, alt, brand, badge, height, animDelay = '0s', glowColor }) {
+  return (
+    <div style={{ position: 'relative', animation: 'float-gentle 5s ease-in-out infinite', animationDelay }}>
+      {/* Glow */}
+      <div style={{
+        position: 'absolute', inset: -16, borderRadius: 24, zIndex: 0, pointerEvents: 'none',
+        background: `radial-gradient(ellipse at center, ${glowColor} 0%, transparent 70%)`,
+        filter: 'blur(16px)', animation: 'pulseGlow 3.5s ease-in-out infinite',
+      }} />
+      {/* Brand pill */}
+      <div style={{ position: 'absolute', top: -12, left: 10, zIndex: 5 }}>
+        <Glass style={{ padding: '4px 11px', borderRadius: 50 }}>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 8, fontWeight: 700, color: C.deepRose, letterSpacing: 2, textTransform: 'uppercase' }}>✦ {brand}</span>
+        </Glass>
+      </div>
+      {/* Image */}
+      <div style={{ position: 'relative', zIndex: 1, borderRadius: 18, overflow: 'hidden', boxShadow: '0 16px 50px rgba(194,24,91,0.14), 0 4px 16px rgba(0,0,0,0.07)' }}>
+        <img src={src} alt={alt} style={{ width: '100%', height, objectFit: 'cover', display: 'block', backgroundColor: '#FFF5F8' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.08), transparent 60%)', pointerEvents: 'none' }} />
+      </div>
+      {/* Badge */}
+      <div style={{ position: 'absolute', bottom: -12, right: 10, zIndex: 5 }}>
+        <Glass style={{ padding: '4px 11px', borderRadius: 50 }}>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 8, fontWeight: 600, color: C.espresso, letterSpacing: 1.5, textTransform: 'uppercase' }}>{badge}</span>
+        </Glass>
+      </div>
+    </div>
+  );
+}
+
+// ─── Hero right panel: 3-brand editorial collage ──────────────────────────────
 function PaletteHero({ visible, mobile }) {
   const ref = useRef();
   useEffect(() => {
@@ -62,87 +97,89 @@ function PaletteHero({ visible, mobile }) {
     else         gsap.to(ref.current, { opacity: 0, y: 18, scale: 0.95, duration: 0.4 });
   }, [visible]);
 
-  return (
-    <div ref={ref} style={{
-      position: 'relative',
-      width: '100%',
-      maxWidth: mobile ? 300 : 380,
-      margin: '0 auto',
-      opacity: 0,
-      transform: 'translateY(18px) scale(0.96)',
-    }}>
-      {/* Glow */}
-      <div style={{
-        position: 'absolute', inset: -32, borderRadius: '50%',
-        background: 'radial-gradient(ellipse at center, rgba(194,24,91,0.20) 0%, transparent 70%)',
-        filter: 'blur(22px)', zIndex: 0, pointerEvents: 'none',
-        animation: 'pulseGlow 3s ease-in-out infinite',
-      }} />
+  // Mobile: single compact image only
+  if (mobile) {
+    return (
+      <div ref={ref} style={{ position: 'relative', width: '100%', maxWidth: 280, margin: '0 auto', opacity: 0, transform: 'translateY(18px)' }}>
+        <div style={{ position: 'absolute', inset: -20, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(194,24,91,0.18) 0%, transparent 70%)', filter: 'blur(18px)', zIndex: 0, pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: -12, left: 10, zIndex: 4 }}>
+          <Glass style={{ padding: '4px 10px', borderRadius: 50 }}>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 8, fontWeight: 700, color: C.deepRose, letterSpacing: 2, textTransform: 'uppercase' }}>✦ Flower Knows</span>
+          </Glass>
+        </div>
+        <div style={{ position: 'relative', zIndex: 1, borderRadius: 18, overflow: 'hidden', boxShadow: '0 16px 50px rgba(194,24,91,0.18)', animation: 'float-gentle 5s ease-in-out infinite' }}>
+          <img src={FLOWER_KNOWS_IMG} alt="Flower Knows" onError={e => { e.target.src = 'https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg?auto=compress&cs=tinysrgb&w=400'; }} style={{ width: '100%', height: 240, objectFit: 'cover', display: 'block' }} />
+        </div>
+        <div style={{ position: 'absolute', bottom: -12, right: 10, zIndex: 4 }}>
+          <Glass style={{ padding: '5px 11px', borderRadius: 50 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>{[1,2,3,4,5].map(i => <Star key={i} />)}<span style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 700, color: C.espresso, marginLeft: 3 }}>4.9</span></div>
+          </Glass>
+        </div>
+      </div>
+    );
+  }
 
-      {/* Sparkles */}
-      {[
-        { top: -14, left: '12%', size: 14, delay: 0 },
-        { top: -10, right: '18%', size: 11, delay: 0.45 },
-        { bottom: -12, left: '22%', size: 9,  delay: 0.9 },
-        { top: '35%', right: -16, size: 12, delay: 0.2 },
-        { top: '65%', left: -16,  size: 10, delay: 0.65 },
-      ].map((p, i) => (
-        <div key={i} style={{
-          position: 'absolute', zIndex: 3,
-          top: p.top, bottom: p.bottom, left: p.left, right: p.right,
-          animation: `float-slow ${2.5 + i * 0.35}s ease-in-out infinite`,
-          animationDelay: `${p.delay}s`,
-        }}>
-          <svg width={p.size} height={p.size} viewBox="0 0 24 24" fill="#C5A059" opacity="0.8">
+  // Desktop: 3-brand editorial 2-column collage
+  return (
+    <div ref={ref} style={{ position: 'relative', width: '100%', opacity: 0, transform: 'translateY(18px) scale(0.96)' }}>
+      {/* Ambient glow */}
+      <div style={{ position: 'absolute', inset: -40, zIndex: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 60% 50%, rgba(194,24,91,0.12) 0%, transparent 70%)', filter: 'blur(28px)' }} />
+
+      {/* Floating sparkles */}
+      {[['-8%', '8%', 12], ['107%', '22%', 9], ['-4%', '72%', 10], ['104%', '68%', 8]].map(([l, t, s], i) => (
+        <div key={i} style={{ position: 'absolute', left: l, top: t, zIndex: 3, animation: `float-slow ${2.8 + i * 0.4}s ease-in-out infinite`, animationDelay: `${i * 0.3}s` }}>
+          <svg width={s} height={s} viewBox="0 0 24 24" fill="#C5A059" opacity="0.75">
             <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41Z" />
           </svg>
         </div>
       ))}
 
-      {/* Brand pill */}
-      <div style={{ position: 'absolute', top: -16, left: 12, zIndex: 4 }}>
-        <Glass style={{ padding: '5px 12px', borderRadius: 50 }}>
-          <span style={{
-            fontFamily: "'Inter', sans-serif", fontSize: 9, fontWeight: 700,
-            color: C.deepRose, letterSpacing: 2.5, textTransform: 'uppercase',
-          }}>✦ Flower Knows</span>
-        </Glass>
-      </div>
-
-      {/* Image */}
-      <div style={{
-        position: 'relative', zIndex: 1, borderRadius: 22, overflow: 'hidden',
-        boxShadow: '0 24px 70px rgba(194,24,91,0.18), 0 6px 22px rgba(0,0,0,0.07)',
-        animation: 'float-gentle 5s ease-in-out infinite',
-      }}>
-        <img
+      {/* 2-column editorial grid */}
+      <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1.05fr 0.95fr', gap: 14, alignItems: 'start' }}>
+        {/* LEFT: Flower Knows — tall hero card */}
+        <BrandCard
           src={FLOWER_KNOWS_IMG}
-          alt="Flower Knows Dreamy Makeup Collection"
-          onError={e => { e.target.src = 'https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg?auto=compress&cs=tinysrgb&w=600'; }}
-          style={{ width: '100%', height: mobile ? 280 : 420, objectFit: 'cover', display: 'block' }}
+          alt="Flower Knows Dreamy Makeup Flat Lay"
+          brand="Flower Knows"
+          badge="★★★★★ 4.9"
+          height={420}
+          glowColor="rgba(194,24,91,0.18)"
+          animDelay="0s"
         />
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%, rgba(183,110,121,0.04) 100%)',
-          pointerEvents: 'none',
-        }} />
+
+        {/* RIGHT: CT top + Rhode bottom, staggered */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 40 }}>
+          <BrandCard
+            src={CT_IMG}
+            alt="Charlotte Tilbury Beautiful Skin Foundation"
+            brand="Charlotte Tilbury"
+            badge="✦ Foundation"
+            height={188}
+            glowColor="rgba(197,160,89,0.18)"
+            animDelay="0.55s"
+          />
+          <BrandCard
+            src={RHODE_IMG}
+            alt="Rhode Peptide Lip Tint Raspberry Jelly"
+            brand="Rhode"
+            badge="Lip Tint ✦"
+            height={188}
+            glowColor="rgba(183,110,121,0.2)"
+            animDelay="1.1s"
+          />
+        </div>
       </div>
 
-      {/* Rating badge */}
-      <div style={{ position: 'absolute', bottom: -16, right: 12, zIndex: 4 }}>
-        <Glass style={{ padding: '7px 14px', borderRadius: 50 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            {[1,2,3,4,5].map(i => <Star key={i} />)}
-            <span style={{
-              fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700,
-              color: C.espresso, marginLeft: 4,
-            }}>4.9</span>
-          </div>
-        </Glass>
+      {/* Decorative sparkle row */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 22, position: 'relative', zIndex: 2 }}>
+        {['✦', '🌸', '✦', '💫', '✦'].map((s, i) => (
+          <span key={i} style={{ color: i % 2 === 0 ? C.brass : C.richPink, fontSize: i === 1 || i === 3 ? 13 : 9, opacity: 0.6, animation: `float-slow ${2 + i * 0.3}s ease-in-out infinite`, animationDelay: `${i * 0.25}s` }}>{s}</span>
+        ))}
       </div>
     </div>
   );
 }
+
 
 // ─── Zone 0: Hero ─────────────────────────────────────────────────────────────
 function Zone0({ visible }) {
@@ -275,10 +312,10 @@ function Zone0({ visible }) {
         )}
       </div>
 
-      {/* Desktop: image on right */}
+      {/* Desktop: 3-brand collage on right */}
       {!mobile && (
         <div ref={imgRef} style={{
-          flexShrink: 0, width: 'min(380px, 38vw)',
+          flexShrink: 0, width: 'min(520px, 47vw)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <PaletteHero visible={visible} mobile={false} />

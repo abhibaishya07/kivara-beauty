@@ -5,6 +5,17 @@ import useBeautyStore from '../../store/beautyStore';
 import { consultGlowBot } from '../../api/glowbotApi';
 import ProductCard from '../storefront/ProductCard';
 
+// ─── Mobile detection hook ─────────────────────────────────────────────────────────────
+function useMobile() {
+  const [mobile, setMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const h = () => setMobile(window.innerWidth < 768);
+    window.addEventListener('resize', h, { passive: true });
+    return () => window.removeEventListener('resize', h);
+  }, []);
+  return mobile;
+}
+
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const C = {
   roseGold: '#B76E79',
@@ -78,8 +89,9 @@ function Markdown({ text }) {
   return <ul style={{ padding: 0, margin: 0 }}>{els}</ul>;
 }
 
-// ─── Main Krystal Zone 2 component ────────────────────────────────────────────
+// ─── Main Krystal Zone 2 component ───────────────────────────────────────────────────
 export default function KrystalZone2({ visible }) {
+  const mobile = useMobile();
   const panelRef = useRef();
   const fileRef  = useRef();
 
@@ -175,31 +187,33 @@ export default function KrystalZone2({ visible }) {
       style={{
         opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease',
         pointerEvents: visible ? 'auto' : 'none',
-        padding: '80px 24px 24px',
-        overflowY: step === 4 ? 'auto' : 'hidden',
+        padding: mobile ? '70px 16px 16px' : '80px 24px 24px',
+        overflowY: 'auto',
       }}
     >
       {/* Zone label */}
-      <div style={{ textAlign: 'center', marginBottom: 20 }}>
+      <div style={{ textAlign: 'center', marginBottom: mobile ? 14 : 20 }}>
         <p style={{
           fontFamily: "'Playfair Display', serif", fontWeight: 700,
-          fontSize: 'clamp(1.4rem, 3.5vw, 2.6rem)',
+          fontSize: mobile ? 'clamp(1.2rem, 6vw, 1.8rem)' : 'clamp(1.4rem, 3.5vw, 2.6rem)',
           background: `linear-gradient(135deg, ${C.richPink}, ${C.roseGold})`,
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
         }}>
           Meet Krystal
         </p>
-        <p style={{
-          fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: 12,
-          color: 'rgba(44,30,34,0.5)', letterSpacing: 1, marginTop: 4,
-        }}>
-          Your personal AI beauty consultant — powered by Gemini
-        </p>
+        {!mobile && (
+          <p style={{
+            fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: 12,
+            color: 'rgba(44,30,34,0.5)', letterSpacing: 1, marginTop: 4,
+          }}>
+            Your personal AI beauty consultant — powered by Gemini
+          </p>
+        )}
       </div>
 
       {/* Main panel */}
       <div ref={panelRef} style={{ width: '100%', maxWidth: 600 }}>
-        <Glass style={{ padding: '28px 30px' }}>
+        <Glass style={{ padding: mobile ? '18px 18px' : '28px 30px' }}>
 
           {/* Step indicator */}
           {step < 3 && (

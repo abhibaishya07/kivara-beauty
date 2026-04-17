@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import useBeautyStore from '../../store/beautyStore';
+import KrystalZone2 from './KrystalZone2';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -403,175 +404,7 @@ function Zone1({ visible }) {
   );
 }
 
-// ─── Zone 2: AI Beauty Intelligence ──────────────────────────────────────────
-function Zone2({ visible }) {
-  const panelRef  = useRef();
-  const inputRef  = useRef();
-  const { chatMessages, chatLoading, addMessage, setChatLoading } = useBeautyStore();
-
-  useEffect(() => {
-    if (!panelRef.current) return;
-    if (visible) {
-      gsap.fromTo(panelRef.current,
-        { opacity: 0, y: 55 },
-        { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.25 });
-    } else {
-      gsap.to(panelRef.current, { opacity: 0, y: 24, duration: 0.35 });
-    }
-  }, [visible]);
-
-  const handleSend = async () => {
-    const text = inputRef.current?.value?.trim();
-    if (!text || chatLoading) return;
-    inputRef.current.value = '';
-    addMessage({ role: 'user', content: text });
-    setChatLoading(true);
-    try {
-      const res = await fetch('/api/glowbot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text }),
-      });
-      const data = await res.json();
-      addMessage({ role: 'assistant', content: data.reply || data.message || 'Let me help you find your perfect ritual. ✨' });
-    } catch {
-      addMessage({ role: 'assistant', content: 'I\'m here to guide you to your perfect beauty ritual. 🌸' });
-    } finally {
-      setChatLoading(false);
-    }
-  };
-
-  const PROMPTS = ['Dry, sensitive skin', 'Anti-aging routine', 'Oily skin + acne', 'Glass skin glow'];
-
-  return (
-    <div
-      className="absolute inset-0 flex items-end justify-center pb-10"
-      style={{
-        opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease',
-        pointerEvents: visible ? 'auto' : 'none',
-      }}
-    >
-      {/* Zone 2 background label */}
-      <div style={{
-        position: 'absolute', top: '15%', left: '50%', transform: 'translateX(-50%)',
-        textAlign: 'center',
-      }}>
-        <p style={{
-          fontFamily: "'Playfair Display', serif", fontWeight: 700,
-          fontSize: 'clamp(1.6rem, 4vw, 3rem)',
-          background: `linear-gradient(135deg, ${C.richPink}, ${C.roseGold})`,
-          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text', opacity: visible ? 0.85 : 0,
-        }}>
-          The Science Within
-        </p>
-        <p style={{
-          fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: 13,
-          color: `rgba(44,30,34,0.45)`, letterSpacing: 1, marginTop: 8,
-        }}>
-          Every formula, every ingredient — decoded for you.
-        </p>
-      </div>
-
-      {/* AI Chat Panel */}
-      <div ref={panelRef} style={{ width: '100%', maxWidth: 580, padding: '0 24px' }}>
-        <Glass style={{ padding: '28px 30px' }}>
-          {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
-            <div style={{
-              width: 46, height: 46, borderRadius: '50%',
-              background: `linear-gradient(135deg, ${C.richPink}, ${C.roseGold})`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
-              boxShadow: `0 0 0 4px rgba(183,110,121,0.15)`,
-            }}>✨</div>
-            <div style={{ flex: 1 }}>
-              <p style={{
-                fontFamily: "'Playfair Display', serif", fontSize: 16, fontWeight: 700,
-                color: C.espresso, marginBottom: 3, letterSpacing: '-0.01em',
-              }}>Beauty Intelligence</p>
-              <p style={{
-                fontFamily: "'Inter', sans-serif", fontSize: 10, color: C.roseGold,
-                letterSpacing: 3, textTransform: 'uppercase',
-              }}>· Active · Personalizing for You</p>
-            </div>
-            <div style={{
-              width: 9, height: 9, borderRadius: '50%', background: C.richPink,
-              animation: 'pulseGlow 1.8s ease-in-out infinite',
-            }} />
-          </div>
-
-          {/* Divider */}
-          <div style={{ height: 1, background: `linear-gradient(to right, transparent, rgba(183,110,121,0.3), transparent)`, marginBottom: 18 }} />
-
-          {/* Prompts or chat log */}
-          {chatMessages.length === 0 ? (
-            <div style={{ marginBottom: 16 }}>
-              <p style={{
-                fontFamily: "'Inter', sans-serif", fontSize: 10, color: 'rgba(44,30,34,0.4)',
-                letterSpacing: 3, textTransform: 'uppercase', marginBottom: 12,
-              }}>Suggested</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {PROMPTS.map(s => (
-                  <button key={s}
-                    onClick={() => { if (inputRef.current) inputRef.current.value = s; }}
-                    style={{
-                      fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 400,
-                      color: C.roseGold, padding: '5px 14px', borderRadius: 50, cursor: 'pointer',
-                      border: `1px solid rgba(183,110,121,0.3)`,
-                      background: 'rgba(248,200,220,0.15)', transition: 'all 0.2s',
-                    }}
-                    onMouseEnter={e => e.target.style.background = 'rgba(183,110,121,0.18)'}
-                    onMouseLeave={e => e.target.style.background = 'rgba(248,200,220,0.15)'}
-                  >{s}</button>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div style={{ maxHeight: 160, overflowY: 'auto', marginBottom: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {chatMessages.map((m, i) => (
-                <div key={i} style={{
-                  alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
-                  maxWidth: '82%', padding: '9px 14px', borderRadius: 14,
-                  background: m.role === 'user' ? `linear-gradient(135deg, ${C.richPink}, ${C.deepRose})` : 'rgba(255,255,255,0.6)',
-                  color: m.role === 'user' ? '#fff' : C.espresso,
-                  fontFamily: "'Inter', sans-serif", fontSize: 13, lineHeight: 1.65,
-                }}>{m.content}</div>
-              ))}
-              {chatLoading && <div style={{ color: C.roseGold, fontSize: 18, alignSelf: 'flex-start' }}>···</div>}
-            </div>
-          )}
-
-          {/* Input */}
-          <div style={{ display: 'flex', gap: 10 }}>
-            <input
-              ref={inputRef}
-              placeholder="Detail your skin concerns…"
-              onKeyDown={e => e.key === 'Enter' && handleSend()}
-              style={{
-                flex: 1, padding: '12px 18px', borderRadius: 50,
-                fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 300,
-                color: C.espresso, letterSpacing: 0.3,
-                background: 'rgba(255,255,255,0.6)',
-                border: `1px solid rgba(183,110,121,0.3)`, outline: 'none',
-              }}
-            />
-            <button onClick={handleSend} style={{
-              width: 46, height: 46, borderRadius: '50%', border: 'none', cursor: 'pointer',
-              background: `linear-gradient(135deg, ${C.richPink}, ${C.roseGold})`,
-              color: '#fff', fontSize: 17,
-              boxShadow: '0 4px 18px rgba(194,24,91,0.35)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              transition: 'transform 0.2s',
-            }}
-              onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
-              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-            >✦</button>
-          </div>
-        </Glass>
-      </div>
-    </div>
-  );
-}
+// Zone 2 is now the full real Krystal AI agent — imported from KrystalZone2.jsx
 
 // ─── Zone 3: Reviews ──────────────────────────────────────────────────────────
 const REVIEWS = [
@@ -744,7 +577,7 @@ export default function ScrollDOMOverlay({ scrollContainerRef }) {
       <EtherealNav />
       <Zone0 visible={activeZone === 0} />
       <Zone1 visible={activeZone === 1} />
-      <Zone2 visible={activeZone === 2} />
+      <KrystalZone2 visible={activeZone === 2} />
       <Zone3 visible={activeZone === 3} />
     </div>
   );

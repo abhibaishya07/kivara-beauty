@@ -60,7 +60,7 @@ const CT_IMG    = 'https://cdn.shopify.com/s/files/1/0972/2816/1387/files/cf428c
 // ─── Reusable brand card ──────────────────────────────────────────────────────
 function BrandCard({ src, alt, brand, badge, height, animDelay = '0s', glowColor }) {
   return (
-    <div style={{ position: 'relative', animation: 'float-gentle 5s ease-in-out infinite', animationDelay }}>
+    <div style={{ position: 'relative', animation: 'float-gentle 5s ease-in-out infinite', animationDelay: animDelay }}>
       {/* Glow */}
       <div style={{
         position: 'absolute', inset: -16, borderRadius: 24, zIndex: 0, pointerEvents: 'none',

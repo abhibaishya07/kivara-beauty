@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 
 const CATEGORIES = [
-  { name: 'Lips',      image: 'https://images.unsplash.com/photo-1573612664822-d7d347da7b80?auto=format&fit=crop&w=600&q=80', color: 'from-lb-blush' },
-  { name: 'Eyes',      image: 'https://images.unsplash.com/photo-1583241475880-083f84372725?auto=format&fit=crop&w=600&q=80', color: 'from-gray-900' },
-  { name: 'Face',      image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80', color: 'from-lb-rose' },
-  { name: 'Skincare',  image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=600&q=80', color: 'from-emerald-900' },
-  { name: 'Hair Care', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80', color: 'from-amber-900' },
-  { name: 'Fragrance', image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80', color: 'from-lb-mauve' },
-  { name: 'Nails',     image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80', color: 'from-lb-black' },
+  { name: 'Lips',       image: 'https://cdn.shopify.com/s/files/1/0972/2816/1387/files/a09daa8fdc50edf1c472985ccf59048865112995.png?v=1774352759', color: 'from-lb-blush' },
+  { name: 'Eyes',       image: 'https://cdn.shopify.com/s/files/1/0972/2816/1387/files/ef2f7301a2071a479a4af82943624fdf1bd295e2.png?v=1774352553', color: 'from-gray-900' },
+  { name: 'Face',       image: 'https://cdn.shopify.com/s/files/1/0972/2816/1387/files/cf428c5b1a9aabe81076f8dcddf29f624403b34b.png?v=1774422775', color: 'from-lb-rose' },
+  { name: 'Skincare',   image: 'https://cdn.shopify.com/s/files/1/0972/2816/1387/files/31var9m3p7L.jpg?v=1773322001', color: 'from-emerald-900' },
+  { name: 'Hair Care',  image: 'https://cdn.shopify.com/s/files/1/0972/2816/1387/files/eebd36f1905698975954d59dae8787eea767cfb9_1.png?v=1774408194', color: 'from-amber-900' },
+  { name: 'Fragrance',  image: 'https://images.pexels.com/photos/1961791/pexels-photo-1961791.jpeg?auto=compress&cs=tinysrgb&w=600', color: 'from-lb-mauve' },
+  { name: 'Nails',      image: 'https://images.pexels.com/photos/3997390/pexels-photo-3997390.jpeg?auto=compress&cs=tinysrgb&w=600', color: 'from-lb-black' },
 ];
 
 export default function CategoryGrid() {

@@ -31,3 +31,5 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`\n✨ Kivara Beauty Server running on port ${PORT}\n`));
+
+module.exports = app;

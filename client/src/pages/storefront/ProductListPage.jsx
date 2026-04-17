@@ -6,7 +6,7 @@ import ProductCard from '../../components/storefront/ProductCard';
 import { getProducts } from '../../api/productApi';
 import Spinner from '../../components/ui/Spinner';
 
-const CATEGORIES = ['All', 'Lips', 'Eyes', 'Face', 'Skincare', 'Fragrance', 'Nails', 'Tools'];
+const CATEGORIES = ['All', 'Lips', 'Eyes', 'Face', 'Skincare', 'Hair Care', 'Fragrance', 'Nails', 'Tools'];
 
 export default function ProductListPage() {
   const [searchParams, setSearchParams] = useSearchParams();

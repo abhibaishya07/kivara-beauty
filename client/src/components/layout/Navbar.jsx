@@ -4,7 +4,7 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import CartDrawer from '../storefront/CartDrawer';
 
-const CATEGORIES = ['Lips', 'Eyes', 'Face', 'Skincare', 'Fragrance', 'Nails', 'Tools'];
+const CATEGORIES = ['Lips', 'Eyes', 'Face', 'Skincare', 'Hair Care', 'Fragrance', 'Nails', 'Tools'];
 
 export default function Navbar() {
   const [cartOpen, setCartOpen] = useState(false);

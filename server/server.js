@@ -9,8 +9,24 @@ connectDB();
 
 const app = express();
 
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. curl, Postman, same-origin)
+    if (!origin) return callback(null, true);
+    // Allow any vercel.app subdomain or an explicitly listed origin
+    if (
+      allowedOrigins.includes(origin) ||
+      /\.vercel\.app$/.test(origin)
+    ) {
+      return callback(null, true);
+    }
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '20mb' }));
@@ -29,7 +45,10 @@ app.get('/api/health', (_, res) => res.json({ status: 'OK', app: 'Kivara Beauty 
 
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`\n✨ Kivara Beauty Server running on port ${PORT}\n`));
+// Only bind a port when running locally (not in Vercel serverless)
+if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`\n✨ Kivara Beauty Server running on port ${PORT}\n`));
+}
 
 module.exports = app;

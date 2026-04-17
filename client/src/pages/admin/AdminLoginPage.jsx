@@ -46,9 +46,7 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        <p className="text-center text-xs text-gray-400 mt-8">
-          Default: admin@kivara.com / Admin@1234
-        </p>
+
       </div>
     </div>
   );

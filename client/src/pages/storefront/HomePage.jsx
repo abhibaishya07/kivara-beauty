@@ -654,17 +654,17 @@ export default function HomePage() {
         </Link>
       </header>
 
-      {/* Floating Krystal AI Button (Bottom Right) */}
+      {/* Floating Krystal AI Button (Bottom Console) */}
       {isMobile && (
         <Link to="/glowbot" style={{
-          position: 'fixed', bottom: '24px', right: '20px', zIndex: 60,
+          position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)', zIndex: 60,
           background: `linear-gradient(135deg, #C2185B, #8B2252)`,
           color: '#fff', textDecoration: 'none',
-          padding: '12px 20px', borderRadius: '50px',
+          padding: '12px 24px', borderRadius: '50px',
           display: 'flex', alignItems: 'center', gap: '8px',
           boxShadow: '0 8px 32px rgba(194,24,91,0.4)',
-          fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '12px',
-          letterSpacing: '1px', textTransform: 'uppercase'
+          fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '13px',
+          letterSpacing: '1px', textTransform: 'uppercase', whiteSpace: 'nowrap'
         }}>
           <span className="animate-pulse">✨</span> Ask Krystal
         </Link>

@@ -9,7 +9,7 @@ exports.getProducts = async (req, res, next) => {
     if (search) query.$or = [
       { name: { $regex: search, $options: 'i' } },
       { description: { $regex: search, $options: 'i' } },
-      { tags: { $in: [new RegExp(search, 'i')] } },
+      { tags: { $regex: search, $options: 'i' } },
     ];
     const products = await Product.find(query).sort({ createdAt: -1 });
     res.json({ success: true, count: products.length, products });

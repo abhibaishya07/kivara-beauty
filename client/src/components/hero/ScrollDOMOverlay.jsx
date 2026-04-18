@@ -572,15 +572,17 @@ function EtherealNav() {
           onMouseLeave={e => e.target.style.color = C.roseGold}
         >Shop All</Link>
         
-        <Link to="/glowbot" style={{
-          fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: mobile ? 9 : 11,
-          color: C.roseGold, textDecoration: 'none',
-          letterSpacing: mobile ? 1.2 : 1.8, textTransform: 'uppercase', transition: 'color 0.2s',
-          flexShrink: 0, display: 'flex', alignItems: 'center', gap: '6px'
-        }}
-          onMouseEnter={e => e.target.style.color = C.espresso}
-          onMouseLeave={e => e.target.style.color = C.roseGold}
-        ><span className="animate-pulse">✨</span> Krystal</Link>
+        {!mobile && (
+          <Link to="/glowbot" style={{
+            fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: mobile ? 9 : 11,
+            color: C.roseGold, textDecoration: 'none',
+            letterSpacing: mobile ? 1.2 : 1.8, textTransform: 'uppercase', transition: 'color 0.2s',
+            flexShrink: 0, display: 'flex', alignItems: 'center', gap: '6px'
+          }}
+            onMouseEnter={e => e.target.style.color = C.espresso}
+            onMouseLeave={e => e.target.style.color = C.roseGold}
+          ><span className="animate-pulse">✨</span> Krystal</Link>
+        )}
       </div>
 
       <Link to="/login" style={{

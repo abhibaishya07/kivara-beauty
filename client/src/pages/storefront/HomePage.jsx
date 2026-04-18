@@ -643,14 +643,32 @@ export default function HomePage() {
         </Link>
         <nav className="immersive-nav__links scrollbar-hide" style={{ overflowX: 'auto', display: 'flex', whiteSpace: 'nowrap', padding: '0 8px', gap: '2rem' }}>
           <Link to="/shop" style={{ flexShrink: 0 }}>Shop All</Link>
-          <Link to="/glowbot" style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span className="animate-pulse">✨</span> Krystal
-          </Link>
+          {!isMobile && (
+            <Link to="/glowbot" style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span className="animate-pulse">✨</span> Krystal
+            </Link>
+          )}
         </nav>
         <Link to="/account" className="immersive-nav__cta" style={{ flexShrink: 0 }}>
           Account
         </Link>
       </header>
+
+      {/* Floating Krystal AI Button (Bottom Right) */}
+      {isMobile && (
+        <Link to="/glowbot" style={{
+          position: 'fixed', bottom: '24px', right: '20px', zIndex: 60,
+          background: `linear-gradient(135deg, #C2185B, #8B2252)`,
+          color: '#fff', textDecoration: 'none',
+          padding: '12px 20px', borderRadius: '50px',
+          display: 'flex', alignItems: 'center', gap: '8px',
+          boxShadow: '0 8px 32px rgba(194,24,91,0.4)',
+          fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '12px',
+          letterSpacing: '1px', textTransform: 'uppercase'
+        }}>
+          <span className="animate-pulse">✨</span> Ask Krystal
+        </Link>
+      )}
 
       <main className="immersive-main">
         <section ref={heroSectionRef} className="immersive-section immersive-section--hero">

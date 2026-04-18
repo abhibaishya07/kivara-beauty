@@ -24,10 +24,8 @@ function AtmosphereOrb({ position, color, size = 2.5, speed = 0.3 }) {
 
 // ─── Scene content ────────────────────────────────────────────────────────────
 function Scene() {
-  const { scrollProgress } = useBeautyStore();
-
   // Glitter density peaks in Zone 2 (exploded view) and tones down elsewhere
-  const sparkleCount = scrollProgress > 0.38 && scrollProgress < 0.75 ? 200 : 100;
+  const sparkleCount = useBeautyStore(s => s.scrollProgress > 0.38 && s.scrollProgress < 0.75 ? 200 : 100);
 
   return (
     <>

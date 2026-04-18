@@ -66,7 +66,7 @@ export default function AdminDashboardPage() {
             <div key={o._id} className="px-6 py-4 flex items-center justify-between gap-4">
               <div>
                 <p className="font-mono text-xs text-lb-mauve font-semibold">{o.orderNumber}</p>
-                <p className="text-sm font-medium">{o.customer.name}</p>
+                <p className="text-sm font-medium">{o.customer?.name || 'Guest User'}</p>
               </div>
               <div className="text-right">
                 <p className="font-semibold">₹{o.total?.toLocaleString()}</p>

@@ -42,8 +42,8 @@ export default function OrderTable({ orders, onUpdated }) {
               <td className="px-4 py-4 font-mono text-xs font-semibold text-lb-mauve">{order.orderNumber}</td>
               <td className="px-4 py-4 text-gray-500 whitespace-nowrap text-xs">{new Date(order.createdAt).toLocaleDateString('en-IN')}</td>
               <td className="px-4 py-4">
-                <p className="font-medium">{order.customer.name}</p>
-                <p className="text-xs text-gray-500">{order.customer.email}</p>
+                <p className="font-medium">{order.customer?.name || 'Guest User'}</p>
+                <p className="text-xs text-gray-500">{order.customer?.email || 'N/A'}</p>
               </td>
               <td className="px-4 py-4 text-gray-600">{order.items.length} item{order.items.length > 1 ? 's' : ''}</td>
               <td className="px-4 py-4 font-semibold">₹{order.total?.toLocaleString()}</td>

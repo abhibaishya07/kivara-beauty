@@ -22,7 +22,7 @@ export default function Navbar() {
         Free Shipping on Orders Above ₹999 &nbsp;|&nbsp; Use Code: LUMIBEAUTY10 for 10% Off
       </div>
 
-      <header className="bg-white border-b border-lb-border sticky top-0 z-40">
+      <header className="bg-white text-lb-black border-b border-lb-border sticky top-0 z-40">
         {/* Main nav */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
           {/* Logo */}

@@ -562,17 +562,25 @@ function EtherealNav() {
         display: 'flex', alignItems: 'center', gap: mobile ? 16 : 24,
         overflowX: 'auto',
       }} className="scrollbar-hide">
-        {[['Shop All', '/shop'], ['Lips', '/shop?category=Lips'], ['Skincare', '/shop?category=Skincare'], ['Hair Care', '/shop?category=Hair+Care']].map(([label, href]) => (
-          <Link key={href} to={href} style={{
-            fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: mobile ? 9 : 11,
-            color: C.roseGold, textDecoration: 'none',
-            letterSpacing: mobile ? 1.2 : 1.8, textTransform: 'uppercase', transition: 'color 0.2s',
-            flexShrink: 0,
-          }}
-            onMouseEnter={e => e.target.style.color = C.espresso}
-            onMouseLeave={e => e.target.style.color = C.roseGold}
-          >{label}</Link>
-        ))}
+        <Link to="/shop" style={{
+          fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: mobile ? 9 : 11,
+          color: C.roseGold, textDecoration: 'none',
+          letterSpacing: mobile ? 1.2 : 1.8, textTransform: 'uppercase', transition: 'color 0.2s',
+          flexShrink: 0,
+        }}
+          onMouseEnter={e => e.target.style.color = C.espresso}
+          onMouseLeave={e => e.target.style.color = C.roseGold}
+        >Shop All</Link>
+        
+        <Link to="/glowbot" style={{
+          fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: mobile ? 9 : 11,
+          color: C.roseGold, textDecoration: 'none',
+          letterSpacing: mobile ? 1.2 : 1.8, textTransform: 'uppercase', transition: 'color 0.2s',
+          flexShrink: 0, display: 'flex', alignItems: 'center', gap: '6px'
+        }}
+          onMouseEnter={e => e.target.style.color = C.espresso}
+          onMouseLeave={e => e.target.style.color = C.roseGold}
+        ><span className="animate-pulse">✨</span> Krystal</Link>
       </div>
 
       <Link to="/login" style={{

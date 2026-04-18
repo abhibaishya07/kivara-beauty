@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { Link } from 'react-router-dom';
-import useBeautyStore from '../../store/beautyStore';
 import { consultGlowBot } from '../../api/glowbotApi';
 import ProductCard from '../storefront/ProductCard';
 

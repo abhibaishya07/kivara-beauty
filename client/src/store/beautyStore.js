@@ -1,32 +1,38 @@
 import { create } from 'zustand';
 
-/**
- * Global beauty store — drives both the DOM overlays and the R3F scene.
- * GSAP ScrollTrigger writes scrollProgress; useFrame reads it.
- */
-const useBeautyStore = create((set, get) => ({
-  // ── Scroll ──────────────────────────────────────────────────────────────────
-  scrollProgress: 0,   // 0 → 1 (normalized across full page height)
-  activeZone: 0,       // 0 | 1 | 2 | 3  (which scroll zone we're in)
+const getActiveSection = (progress) => {
+  if (progress < 0.18) return 0;
+  if (progress < 0.34) return 1;
+  if (progress < 0.56) return 2;
+  if (progress < 0.72) return 3;
+  if (progress < 0.87) return 4;
+  return 5;
+};
 
-  setScrollProgress: (p) => {
-    const zone = p < 0.15 ? 0 : p < 0.40 ? 1 : p < 0.75 ? 2 : 3;
-    set({ scrollProgress: p, activeZone: zone });
-  },
-
-  // ── Mouse ───────────────────────────────────────────────────────────────────
-  mouseNorm: { x: 0, y: 0 },     // –1 → 1 in each axis
-  setMouseNorm: (x, y) => set({ mouseNorm: { x, y } }),
-
-  // ── UI state ─────────────────────────────────────────────────────────────────
-  hoveredCard: null,              // 'skincare' | 'makeup' | null
-  setHoveredCard: (card) => set({ hoveredCard: card }),
-
-  // ── AI chat ──────────────────────────────────────────────────────────────────
+const useBeautyStore = create((set) => ({
+  scrollProgress: 0,
+  activeSection: 0,
+  activeZone: 0,
+  mouseNorm: { x: 0, y: 0 },
+  cursorVariant: 'default',
+  soundEnabled: false,
+  introComplete: false,
+  hoveredCard: null,
   chatMessages: [],
   chatLoading: false,
-  addMessage: (msg) => set((s) => ({ chatMessages: [...s.chatMessages, msg] })),
-  setChatLoading: (v) => set({ chatLoading: v }),
+
+  setScrollProgress: (scrollProgress) => {
+    const activeSection = getActiveSection(scrollProgress);
+    set({ scrollProgress, activeSection, activeZone: activeSection });
+  },
+
+  setMouseNorm: (x, y) => set({ mouseNorm: { x, y } }),
+  setCursorVariant: (cursorVariant) => set({ cursorVariant }),
+  setSoundEnabled: (soundEnabled) => set({ soundEnabled }),
+  setIntroComplete: (introComplete) => set({ introComplete }),
+  setHoveredCard: (hoveredCard) => set({ hoveredCard }),
+  addMessage: (message) => set((state) => ({ chatMessages: [...state.chatMessages, message] })),
+  setChatLoading: (chatLoading) => set({ chatLoading }),
 }));
 
 export default useBeautyStore;

@@ -109,7 +109,7 @@ function PaletteHero({ visible, mobile }) {
             { src: FLOWER_KNOWS_IMG, brand: 'Flower Knows', badge: '★★★★★ 4.9', h: 200, glow: 'rgba(194,24,91,0.16)', d: '0s', w: 170 },
             { src: CT_IMG,           brand: 'Charlotte Tilbury', badge: '✦ Foundation', h: 220, glow: 'rgba(197,160,89,0.16)', d: '0.3s', w: 135 },
             { src: RHODE_IMG,        brand: 'Rhode', badge: 'Lip Tint ✦', h: 210, glow: 'rgba(183,110,121,0.16)', d: '0.6s', w: 115 },
-          ].map(({ src, brand, badge, h, glow, d, w }) => (
+          ].map(({ src, brand, badge, h, glow, w }) => (
             <div key={brand} style={{ flexShrink: 0, width: w, scrollSnapAlign: 'start', position: 'relative', paddingTop: 14, paddingBottom: 14 }}>
               {/* glow */}
               <div style={{ position: 'absolute', inset: -10, borderRadius: 20, background: `radial-gradient(ellipse, ${glow} 0%, transparent 70%)`, filter: 'blur(12px)', pointerEvents: 'none' }} />

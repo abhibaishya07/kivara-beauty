@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getInventory } from '../../api/inventoryApi';
 import InventoryTable from '../../components/admin/InventoryTable';
 import Spinner from '../../components/ui/Spinner';
+import toast from 'react-hot-toast';
 
 export default function AdminInventoryPage() {
   const [inventory, setInventory] = useState([]);
@@ -14,7 +15,7 @@ export default function AdminInventoryPage() {
       const { data } = await getInventory();
       setInventory(data.inventory);
     } catch (err) {
-      import('react-hot-toast').then(({ default: toast }) => toast.error(err.response?.data?.message || err.message));
+      toast.error(err.response?.data?.message || err.message);
     } finally { setLoading(false); }
   };
 

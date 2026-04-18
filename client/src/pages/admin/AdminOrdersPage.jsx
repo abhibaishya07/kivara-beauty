@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getOrders } from '../../api/orderApi';
 import OrderTable from '../../components/admin/OrderTable';
 import Spinner from '../../components/ui/Spinner';
+import toast from 'react-hot-toast';
 
 const STATUS_FILTERS = ['All', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
@@ -17,7 +18,7 @@ export default function AdminOrdersPage() {
       const { data } = await getOrders();
       setOrders(data.orders);
     } catch (err) {
-      import('react-hot-toast').then(({ default: toast }) => toast.error(err.response?.data?.message || err.message));
+      toast.error(err.response?.data?.message || err.message);
     } finally { setLoading(false); }
   };
 

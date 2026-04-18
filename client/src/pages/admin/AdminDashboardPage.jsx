@@ -4,6 +4,7 @@ import { getOrders } from '../../api/orderApi';
 import { getAllProductsAdmin } from '../../api/productApi';
 import { getInventory } from '../../api/inventoryApi';
 import Spinner from '../../components/ui/Spinner';
+import toast from 'react-hot-toast';
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState(null);
@@ -22,9 +23,7 @@ export default function AdminDashboardPage() {
         setStats({ orders: orders.length, products: products.length, revenue, lowStock });
         setRecent(orders.slice(0, 5));
       } catch (err) {
-        import('react-hot-toast').then(({ default: toast }) => {
-          toast.error('Dashboard Error: ' + (err.response?.data?.message || err.message));
-        });
+        toast.error('Dashboard Error: ' + (err.response?.data?.message || err.message));
       } finally { setLoading(false); }
     };
     load();

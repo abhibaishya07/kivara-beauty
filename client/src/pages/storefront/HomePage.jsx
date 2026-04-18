@@ -644,7 +644,7 @@ export default function HomePage() {
           Kivara
         </Link>
         <nav className="immersive-nav__links scrollbar-hide" style={{ overflowX: 'auto', display: 'flex', whiteSpace: 'nowrap', padding: '0 8px', gap: '2rem' }}>
-          <Link to="/shop" style={{ flexShrink: 0 }}>Shop All</Link>
+          <Link to="/shop" style={{ flexShrink: 0 }}>{isMobile ? 'Shop Now' : 'Shop All'}</Link>
           {!isMobile && (
             <Link to="/glowbot" style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span className="animate-pulse">✨</span> Krystal

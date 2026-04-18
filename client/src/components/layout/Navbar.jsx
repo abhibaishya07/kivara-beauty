@@ -87,7 +87,7 @@ export default function Navbar() {
         {/* Mobile menu container (Dropdown) */}
         <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? 'max-h-[500px] border-t border-lb-border' : 'max-h-0'}`}>
           <div className="bg-white px-6 py-6 flex flex-col gap-5">
-            <Link to="/shop" className="text-xs text-lb-black tracking-widest uppercase font-bold" onClick={() => setMenuOpen(false)}>Shop All</Link>
+            <Link to="/shop" className="text-xs text-lb-black tracking-widest uppercase font-bold" onClick={() => setMenuOpen(false)}>Shop Now</Link>
             
             <div className="grid grid-cols-2 gap-y-4 gap-x-2">
               {CATEGORIES.map(c => (

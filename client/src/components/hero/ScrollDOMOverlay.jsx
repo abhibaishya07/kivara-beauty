@@ -570,7 +570,7 @@ function EtherealNav() {
         }}
           onMouseEnter={e => e.target.style.color = C.espresso}
           onMouseLeave={e => e.target.style.color = C.roseGold}
-        >Shop All</Link>
+        >{mobile ? 'Shop Now' : 'Shop All'}</Link>
         
         {!mobile && (
           <Link to="/glowbot" style={{

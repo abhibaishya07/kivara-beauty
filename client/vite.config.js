@@ -12,4 +12,11 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    sourcemap: false, // Explicitly disable source maps
+    minify: 'esbuild',
+  },
+  esbuild: {
+    drop: ['console', 'debugger'], // Remove all console logs and leftover debuggers
+  },
 });

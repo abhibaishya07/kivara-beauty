@@ -243,7 +243,7 @@ function Zone0({ visible }) {
         flexDirection: mobile ? 'column' : 'row',
         alignItems: mobile ? 'flex-start' : 'center',
         justifyContent: mobile ? 'flex-start' : 'space-between',
-        overflowY: mobile ? 'auto' : 'hidden',
+        overflowY: 'hidden',
         gap: mobile ? 24 : 0,
       }}
     >
@@ -393,7 +393,7 @@ function Zone1({ visible }) {
         pointerEvents: visible ? 'auto' : 'none',
         padding: mobile ? '80px 20px 20px' : '0 48px',
         display: 'flex', alignItems: mobile ? 'flex-start' : 'center',
-        overflowY: mobile ? 'auto' : 'hidden',
+        overflowY: 'hidden',
       }}
     >
       <div style={{ width: '100%', maxWidth: mobile ? '100%' : 420 }}>
@@ -471,7 +471,7 @@ function Zone3({ visible }) {
       pointerEvents: visible ? 'auto' : 'none',
       padding: mobile ? '80px 20px 20px' : '0 48px',
       display: 'flex', flexDirection: 'column', justifyContent: mobile ? 'flex-start' : 'center',
-      overflowY: mobile ? 'auto' : 'hidden',
+      overflowY: 'hidden',
     }}>
       <div className="z3-head" style={{ marginBottom: mobile ? 20 : 26 }}>
         <p style={{
@@ -616,7 +616,7 @@ export default function ScrollDOMOverlay({ scrollContainerRef }) {
   }, []);
 
   return (
-    <div style={{ position: 'sticky', top: 0, height: '100vh', width: '100%', overflow: 'hidden' }}>
+    <div style={{ position: 'sticky', top: 0, height: '100dvh', width: '100%', overflow: 'hidden' }}>
       <EtherealNav />
       <Zone0 visible={activeZone === 0} />
       <Zone1 visible={activeZone === 1} />

@@ -188,7 +188,7 @@ export default function KrystalZone2({ visible }) {
         opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease',
         pointerEvents: visible ? 'auto' : 'none',
         padding: mobile ? '70px 16px 16px' : '80px 24px 24px',
-        overflowY: 'auto',
+        overflowY: 'hidden',
       }}
     >
       {/* Zone label */}

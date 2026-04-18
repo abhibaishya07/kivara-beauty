@@ -188,7 +188,7 @@ export default function HomePage() {
         style={{ height: '500vh', position: 'relative' }}
       >
         {/* Sticky shell: contains the fixed canvas + DOM overlay */}
-        <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
+        <div style={{ position: 'sticky', top: 0, height: '100dvh', overflow: 'hidden' }}>
 
           {/* Background gradient that shifts with scroll */}
           <div style={{

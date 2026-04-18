@@ -546,44 +546,44 @@ function EtherealNav() {
       border: '1px solid rgba(255,255,255,0.65)',
       boxShadow: '0 6px 30px rgba(183,110,121,0.14)',
       borderRadius: 50,
-      padding: mobile ? '8px 16px' : '10px 24px',
+      padding: mobile ? '8px 12px 8px 16px' : '10px 24px',
       display: 'flex', alignItems: 'center',
       gap: mobile ? 14 : 24,
+      width: mobile ? 'max-content' : 'auto',
+      maxWidth: mobile ? '94vw' : 'none',
     }}>
       <Link to="/" style={{
         fontFamily: "'Playfair Display', serif", fontWeight: 700,
         fontSize: mobile ? 15 : 18, color: C.espresso, textDecoration: 'none',
+        flexShrink: 0,
       }}>Kivara</Link>
 
-      {/* Hide some links on mobile */}
-      {!mobile && [['Shop All', '/shop'], ['Lips', '/shop?category=Lips'], ['Skincare', '/shop?category=Skincare'], ['Hair Care', '/shop?category=Hair+Care']].map(([label, href]) => (
-        <Link key={href} to={href} style={{
-          fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: 11,
-          color: C.roseGold, textDecoration: 'none',
-          letterSpacing: 1.8, textTransform: 'uppercase', transition: 'color 0.2s',
-        }}
-          onMouseEnter={e => e.target.style.color = C.espresso}
-          onMouseLeave={e => e.target.style.color = C.roseGold}
-        >{label}</Link>
-      ))}
-
-      {/* Mobile: just Shop */}
-      {mobile && (
-        <Link to="/shop" style={{
-          fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: 10,
-          color: C.roseGold, textDecoration: 'none',
-          letterSpacing: 1.5, textTransform: 'uppercase',
-        }}>Shop</Link>
-      )}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: mobile ? 16 : 24,
+        overflowX: 'auto',
+      }} className="scrollbar-hide">
+        {[['Shop All', '/shop'], ['Lips', '/shop?category=Lips'], ['Skincare', '/shop?category=Skincare'], ['Hair Care', '/shop?category=Hair+Care']].map(([label, href]) => (
+          <Link key={href} to={href} style={{
+            fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: mobile ? 9 : 11,
+            color: C.roseGold, textDecoration: 'none',
+            letterSpacing: mobile ? 1.2 : 1.8, textTransform: 'uppercase', transition: 'color 0.2s',
+            flexShrink: 0,
+          }}
+            onMouseEnter={e => e.target.style.color = C.espresso}
+            onMouseLeave={e => e.target.style.color = C.roseGold}
+          >{label}</Link>
+        ))}
+      </div>
 
       <Link to="/login" style={{
         fontFamily: "'Inter', sans-serif", fontWeight: 700,
         fontSize: mobile ? 9 : 10,
-        color: '#fff', padding: mobile ? '6px 14px' : '8px 18px',
+        color: '#fff', padding: mobile ? '8px 14px' : '8px 18px',
         borderRadius: 50, textDecoration: 'none',
         background: `linear-gradient(135deg, ${C.richPink}, ${C.deepRose})`,
         letterSpacing: 1.2, textTransform: 'uppercase',
         boxShadow: '0 4px 14px rgba(194,24,91,0.3)',
+        flexShrink: 0,
       }}>Account</Link>
     </nav>
   );

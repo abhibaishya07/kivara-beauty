@@ -56,21 +56,36 @@ export default function ProductListPage() {
           <p className="text-gray-500 text-sm mt-2">{products.length} products</p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-10">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
           {/* Sidebar */}
           <aside className="lg:w-56 flex-shrink-0">
+            {/* Search */}
             <div className="mb-6">
-              <p className="text-[10px] tracking-widest uppercase font-bold text-gray-500 mb-3">Search</p>
+              <p className="text-[10px] tracking-widest uppercase font-bold text-gray-500 mb-3 hidden lg:block">Search</p>
               <input value={search} onChange={e => setSearch(e.target.value)}
-                placeholder="Search products..." className="input-field text-xs" />
+                placeholder="Search products..." className="input-field text-xs w-full rounded-full lg:rounded-none px-5 py-3.5 shadow-sm lg:shadow-none" />
             </div>
+            {/* Categories */}
             <div>
-              <p className="text-[10px] tracking-widest uppercase font-bold text-gray-500 mb-3">Category</p>
-              <div className="space-y-1">
+              <p className="text-[10px] tracking-widest uppercase font-bold text-gray-500 mb-3 hidden lg:block">Category</p>
+              
+              {/* Desktop Categories */}
+              <div className="hidden lg:flex flex-col space-y-1">
                 {CATEGORIES.map(cat => (
                   <button key={cat} onClick={() => setCategory(cat)}
-                    className={`w-full text-left text-sm px-3 py-2 transition-colors duration-150
-                                ${selectedCategory === cat ? 'bg-lb-black text-white font-semibold' : 'hover:bg-lb-blush text-gray-700'}`}>
+                    className={`w-full text-left text-sm px-3 py-2 transition-colors duration-150 rounded-md lg:rounded-none
+                                ${selectedCategory === cat ? 'bg-lb-black text-white font-semibold shadow-md' : 'hover:bg-lb-blush text-gray-400 hover:text-lb-black'}`}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* Mobile Categories (Horizontal Scroll) */}
+              <div className="lg:hidden flex overflow-x-auto pb-4 -mx-6 px-6 gap-2 scrollbar-hide snap-x">
+                {CATEGORIES.map(cat => (
+                  <button key={cat} onClick={() => setCategory(cat)}
+                    className={`flex-shrink-0 snap-start text-xs font-semibold px-5 py-2.5 rounded-full whitespace-nowrap transition-all shadow-sm
+                                ${selectedCategory === cat ? 'bg-lb-rose text-white border-2 border-lb-rose' : 'bg-[#1a0a10] text-gray-300 border border-gray-800 hover:bg-[#32111b]'}`}>
                     {cat}
                   </button>
                 ))}

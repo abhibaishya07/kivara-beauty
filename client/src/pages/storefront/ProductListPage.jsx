@@ -13,6 +13,7 @@ export default function ProductListPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const selectedCategory = searchParams.get('category') || 'All';
 
@@ -22,12 +23,25 @@ export default function ProductListPage() {
   };
 
   useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 350);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  useEffect(() => {
+    let active = true;
     setLoading(true);
     const params = {};
     if (selectedCategory !== 'All') params.category = selectedCategory;
-    if (search) params.search = search;
-    getProducts(params).then(({ data }) => setProducts(data.products)).finally(() => setLoading(false));
-  }, [selectedCategory, search]);
+    if (debouncedSearch) params.search = debouncedSearch;
+    
+    getProducts(params).then(({ data }) => {
+      if (active) setProducts(data.products);
+    }).finally(() => {
+      if (active) setLoading(false);
+    });
+    
+    return () => { active = false; };
+  }, [selectedCategory, debouncedSearch]);
 
   return (
     <>

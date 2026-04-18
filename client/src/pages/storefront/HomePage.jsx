@@ -588,34 +588,16 @@ export default function HomePage() {
       return undefined;
     }
 
-    let splitInstance;
-
     const context = gsap.context(() => {
-      splitInstance = SplitText.create(heroHeadlineRef.current, { type: 'chars,words' });
-
       const timeline = gsap.timeline();
-      timeline.fromTo(
-        splitInstance.chars,
-        { yPercent: 120, opacity: 0, rotateX: -90 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          rotateX: 0,
-          stagger: 0.03,
-          duration: 1.15,
-          ease: 'power4.out',
-        },
-      );
       timeline.fromTo(
         heroSectionRef.current.querySelectorAll('.hero-copy-item'),
         { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.12, duration: 0.8, ease: 'power3.out' },
-        '-=0.7',
+        { y: 0, opacity: 1, stagger: 0.15, duration: 1.1, ease: 'power3.out' }
       );
     }, heroSectionRef);
 
     return () => {
-      splitInstance?.revert();
       context.revert();
     };
   }, [introComplete]);
@@ -677,7 +659,7 @@ export default function HomePage() {
           <div className="hero-layout">
             <div className="hero-copy">
               <p className="eyebrow hero-copy-item">Kivara Beauty • Curated Makeup Store</p>
-              <h1 ref={heroHeadlineRef} className="hero-headline">
+              <h1 ref={heroHeadlineRef} className="hero-headline hero-copy-item">
                 Coveted Makeup, <span className="gradient-word">Curated Beautifully</span>
               </h1>
               <p className="hero-description hero-copy-item">

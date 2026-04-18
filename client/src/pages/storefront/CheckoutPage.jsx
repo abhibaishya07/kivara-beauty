@@ -63,7 +63,7 @@ export default function CheckoutPage() {
 
   const Field = ({ label, name, type = 'text', required = true }) => (
     <div>
-      <label className="block text-xs tracking-widest uppercase font-semibold text-gray-600 mb-1.5">{label}{required ? ' *' : ''}</label>
+      <label className="block text-xs tracking-widest uppercase font-semibold text-gray-400 mb-1.5">{label}{required ? ' *' : ''}</label>
       <input name={name} type={type} value={form[name]} onChange={handle} required={required} className="input-field" />
     </div>
   );
@@ -93,13 +93,13 @@ export default function CheckoutPage() {
             <Field label="PIN Code" name="pincode" />
 
             {/* Payment */}
-            <div className="bg-lb-blush p-5 border border-lb-rose/30">
+            <div className="bg-lb-blush p-5 border border-lb-rose/30 text-lb-black">
               <h2 className="font-display text-lg font-medium mb-3">Payment</h2>
               <div className="flex items-center gap-3 bg-white border border-lb-border p-4">
                 <input type="radio" id="cod" name="payment" defaultChecked className="accent-lb-mauve" />
                 <label htmlFor="cod" className="text-sm font-medium cursor-pointer">Cash on Delivery</label>
               </div>
-              <p className="text-xs text-gray-500 mt-3">Razorpay online payment coming soon!</p>
+              <p className="text-xs text-lb-black/70 mt-3">Razorpay online payment coming soon!</p>
             </div>
 
             <button type="submit" disabled={loading} className="btn-primary w-full">
@@ -108,7 +108,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Right — Order Summary */}
-          <div className="bg-lb-gray border border-lb-border p-6 h-fit space-y-4">
+          <div className="bg-white border border-lb-border p-6 h-fit space-y-4 text-lb-black">
             <h2 className="font-display text-xl font-medium">Order Summary</h2>
             <div className="space-y-4 divide-y divide-lb-border">
               {items.map(item => (

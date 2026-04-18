@@ -51,15 +51,15 @@ export default function ProductDetailPage() {
   return (
     <>
       <Navbar />
-      <main className="max-w-7xl mx-auto px-6 py-12">
+      <main className="bg-white text-lb-black max-w-7xl mx-auto px-6 py-12">
         {/* Breadcrumb */}
         <nav className="text-xs text-gray-400 mb-8 flex items-center gap-2">
-          <Link to="/" className="hover:text-lb-black transition-colors">Home</Link>
-          <span>/</span>
-          <Link to="/shop" className="hover:text-lb-black transition-colors">Shop</Link>
-          <span>/</span>
-          <Link to={`/shop?category=${product.category}`} className="hover:text-lb-black transition-colors">{product.category}</Link>
-          <span>/</span>
+          <Link to="/" className="hover:text-lb-black transition-colors text-gray-500">Home</Link>
+          <span className="text-gray-400">/</span>
+          <Link to="/shop" className="hover:text-lb-black transition-colors text-gray-500">Shop</Link>
+          <span className="text-gray-400">/</span>
+          <Link to={`/shop?category=${product.category}`} className="hover:text-lb-black transition-colors text-gray-500">{product.category}</Link>
+          <span className="text-gray-400">/</span>
           <span className="text-lb-black font-medium">{product.name}</span>
         </nav>
 
@@ -102,7 +102,7 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            <p className="text-gray-600 leading-relaxed">{product.description}</p>
+            <p className="text-gray-600 leading-relaxed text-lb-black/80">{product.description}</p>
 
             {/* Tags */}
             {product.tags?.length > 0 && (
@@ -144,7 +144,7 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Reviews Section */}
-        <div className="mt-24 max-w-4xl mx-auto border-t border-lb-border pt-16">
+        <div className="mt-24 max-w-4xl mx-auto border-t border-lb-border pt-16 bg-white text-lb-black">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
             <div>
               <h2 className="font-display text-3xl font-medium mb-2 text-lb-black">Customer Reviews</h2>
@@ -160,7 +160,7 @@ export default function ProductDetailPage() {
 
           <div className="space-y-8">
             {reviews.length === 0 ? (
-              <div className="bg-lb-blush p-8 text-center text-gray-500 border border-lb-border">
+              <div className="bg-lb-blush p-8 text-center text-gray-600 border border-lb-border">
                 Be the first to share your thoughts on this product!
               </div>
             ) : (
@@ -178,7 +178,7 @@ export default function ProductDetailPage() {
                     </div>
                     <StarRating rating={review.rating} />
                   </div>
-                  <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap ml-13">
+                  <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap ml-13 text-lb-black/80">
                     {review.reviewText}
                   </p>
                 </div>

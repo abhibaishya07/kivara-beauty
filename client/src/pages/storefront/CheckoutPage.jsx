@@ -71,20 +71,20 @@ export default function CheckoutPage() {
   return (
     <>
       <Navbar />
-      <main className="max-w-6xl mx-auto px-6 py-12">
-        <h1 className="font-display text-4xl font-medium mb-10">Checkout</h1>
+      <main className="max-w-6xl mx-auto px-6 py-12 text-lb-black">
+        <h1 className="font-display text-4xl font-medium mb-10 text-lb-black">Checkout</h1>
 
         <form onSubmit={handlePlaceOrder} className="grid lg:grid-cols-2 gap-12">
           {/* Left — Details */}
           <div className="space-y-6">
-            <h2 className="font-display text-xl font-medium pb-3 border-b border-lb-border">Contact Information</h2>
+            <h2 className="font-display text-xl font-medium pb-3 border-b border-lb-border text-lb-black">Contact Information</h2>
             <div className="grid grid-cols-2 gap-4">
               <Field label="Full Name" name="name" />
               <Field label="Email" name="email" type="email" />
             </div>
             <Field label="Phone" name="phone" type="tel" required={false} />
 
-            <h2 className="font-display text-xl font-medium pb-3 border-b border-lb-border">Shipping Address</h2>
+            <h2 className="font-display text-xl font-medium pb-3 border-b border-lb-border text-lb-black">Shipping Address</h2>
             <Field label="Address Line 1" name="line1" />
             <div className="grid grid-cols-2 gap-4">
               <Field label="City" name="city" />

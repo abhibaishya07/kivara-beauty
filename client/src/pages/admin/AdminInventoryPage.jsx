@@ -13,6 +13,8 @@ export default function AdminInventoryPage() {
     try {
       const { data } = await getInventory();
       setInventory(data.inventory);
+    } catch (err) {
+      import('react-hot-toast').then(({ default: toast }) => toast.error(err.response?.data?.message || err.message));
     } finally { setLoading(false); }
   };
 

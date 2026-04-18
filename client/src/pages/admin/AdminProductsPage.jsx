@@ -18,6 +18,8 @@ export default function AdminProductsPage() {
     try {
       const { data } = await getAllProductsAdmin();
       setProducts(data.products);
+    } catch (err) {
+      import('react-hot-toast').then(({ default: toast }) => toast.error(err.response?.data?.message || err.message));
     } finally { setLoading(false); }
   };
 

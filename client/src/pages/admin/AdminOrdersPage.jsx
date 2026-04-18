@@ -16,6 +16,8 @@ export default function AdminOrdersPage() {
     try {
       const { data } = await getOrders();
       setOrders(data.orders);
+    } catch (err) {
+      import('react-hot-toast').then(({ default: toast }) => toast.error(err.response?.data?.message || err.message));
     } finally { setLoading(false); }
   };
 

@@ -26,6 +26,14 @@ export function AdminProvider({ children }) {
     setAdmin(null);
   };
 
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setAdmin(null); // the axios interceptor already wiped localStorage
+    };
+    window.addEventListener('auth_unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth_unauthorized', handleUnauthorized);
+  }, []);
+
   return (
     <AdminContext.Provider value={{ admin, loading, adminLogin, adminLogout, isAdmin: !!admin }}>
       {children}

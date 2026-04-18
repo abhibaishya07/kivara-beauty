@@ -21,6 +21,10 @@ export default function AdminDashboardPage() {
         const lowStock = inventory.filter(i => i.stockStatus === 'low' || i.stockStatus === 'out-of-stock').length;
         setStats({ orders: orders.length, products: products.length, revenue, lowStock });
         setRecent(orders.slice(0, 5));
+      } catch (err) {
+        import('react-hot-toast').then(({ default: toast }) => {
+          toast.error('Dashboard Error: ' + (err.response?.data?.message || err.message));
+        });
       } finally { setLoading(false); }
     };
     load();

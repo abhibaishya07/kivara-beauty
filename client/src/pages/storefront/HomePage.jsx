@@ -629,15 +629,6 @@ export default function HomePage() {
       <CursorOrb isMobile={isMobile} />
       <ProgressRail />
 
-      <button
-        type="button"
-        className="sound-toggle"
-        onClick={() => setSoundEnabled(!soundEnabled)}
-        data-cursor="hover"
-      >
-        <span>{soundEnabled ? 'Sound on' : 'Sound muted'}</span>
-      </button>
-
       <AnimatePresence>{!introComplete ? <IntroOverlay /> : null}</AnimatePresence>
 
       <div className="immersive-canvas-shell" aria-hidden="true">
@@ -645,17 +636,17 @@ export default function HomePage() {
         <div className="immersive-canvas-shell__veil" />
       </div>
 
-      <header className="immersive-nav" data-reveal>
-        <Link to="/" className="immersive-nav__brand">
+      <header className="immersive-nav" style={{ maxWidth: '95vw', width: 'auto' }}>
+        <Link to="/" className="immersive-nav__brand" style={{ flexShrink: 0 }}>
           Kivara
         </Link>
-        <nav className="immersive-nav__links">
-          <Link to="/shop">Shop All</Link>
-          <Link to="/shop?category=Lips">Lips</Link>
-          <Link to="/shop?category=Skincare">Skincare</Link>
-          <Link to="/shop?category=Hair Care">Hair Care</Link>
+        <nav className="immersive-nav__links scrollbar-hide" style={{ overflowX: 'auto', display: 'flex', whiteSpace: 'nowrap', padding: '0 8px' }}>
+          <Link to="/shop" style={{ flexShrink: 0 }}>Shop All</Link>
+          <Link to="/shop?category=Lips" style={{ flexShrink: 0 }}>Lips</Link>
+          <Link to="/shop?category=Skincare" style={{ flexShrink: 0 }}>Skincare</Link>
+          <Link to="/shop?category=Hair Care" style={{ flexShrink: 0 }}>Hair Care</Link>
         </nav>
-        <Link to="/account" className="immersive-nav__cta">
+        <Link to="/account" className="immersive-nav__cta" style={{ flexShrink: 0 }}>
           Account
         </Link>
       </header>

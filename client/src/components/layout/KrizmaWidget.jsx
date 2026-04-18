@@ -2,8 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
 const WELCOME_MESSAGE = {
   role: 'assistant',
   content: "Hi there! 💖 I'm **Krizma**, your Kivara Beauty support assistant. How can I help you today?\n\nYou can ask me about:\n- 📦 Order status or tracking\n- 🔄 Returns & refunds\n- 🚚 Shipping times\n- 🛍️ Product authenticity",
@@ -57,7 +55,7 @@ export default function KrizmaWidget() {
     setIsTyping(true);
 
     try {
-      const { data } = await axios.post(`${API_BASE}/api/krizma/chat`, {
+      const { data } = await axios.post(`/api/krizma/chat`, {
         messages: newMessages.filter(m => m.role !== 'assistant' || m !== WELCOME_MESSAGE).map(m => ({
           role: m.role,
           content: m.content,

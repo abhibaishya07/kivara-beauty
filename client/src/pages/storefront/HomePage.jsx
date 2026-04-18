@@ -625,10 +625,12 @@ export default function HomePage() {
       <CursorOrb isMobile={isMobile} />
       <ProgressRail />
 
-      {/* Floating Shop Now button placed where the sound toggle used to be */}
-      <Link to="/shop" className="sound-toggle" data-cursor="hover" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span>Shop Now &rarr;</span>
-      </Link>
+      {/* Floating Shop Now button (Desktop only) */}
+      {!isMobile && (
+        <Link to="/shop" className="sound-toggle" data-cursor="hover" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span>Shop Now &rarr;</span>
+        </Link>
+      )}
 
       <AnimatePresence>{!introComplete ? <IntroOverlay /> : null}</AnimatePresence>
 

@@ -472,11 +472,11 @@ export default function HomePage() {
 
   useEffect(() => {
     const lenis = new Lenis({
-      lerp: 0.08,
+      lerp: 0.04,
       smoothWheel: true,
       syncTouch: true,
-      touchMultiplier: 1.05,
-      wheelMultiplier: 0.92,
+      touchMultiplier: 1.2,
+      wheelMultiplier: 1.0,
     });
 
     const update = (time) => {
@@ -557,7 +557,7 @@ export default function HomePage() {
         trigger: pageRef.current,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 1.2,
+        scrub: 2.2,
         onUpdate: (self) => setScrollProgress(self.progress),
       });
 
@@ -570,7 +570,7 @@ export default function HomePage() {
             start: 'top top',
             end: () => `+=${horizontalTrackRef.current.scrollWidth - horizontalSectionRef.current.clientWidth + window.innerWidth * 0.5}`,
             pin: true,
-            scrub: 1.2,
+            scrub: 2.2,
             anticipatePin: 1,
             invalidateOnRefresh: true,
           },
@@ -592,8 +592,8 @@ export default function HomePage() {
       const timeline = gsap.timeline();
       timeline.fromTo(
         heroSectionRef.current.querySelectorAll('.hero-copy-item'),
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.15, duration: 1.1, ease: 'power3.out' }
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, stagger: 0.18, duration: 1.6, ease: 'power4.out' }
       );
     }, heroSectionRef);
 

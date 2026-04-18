@@ -24,7 +24,7 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-lb-black flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white p-10 animate-scaleIn">
+      <div className="w-full max-w-md bg-white p-10 animate-scaleIn text-lb-black">
         <div className="text-center mb-10">
           <h1 className="font-display text-3xl font-semibold mb-2">Kivara</h1>
           <p className="text-xs tracking-widest uppercase text-lb-mauve font-semibold">Admin Portal</p>

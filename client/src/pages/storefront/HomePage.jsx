@@ -410,14 +410,11 @@ export default function HomePage() {
   const setScrollProgress = useBeautyStore((state) => state.setScrollProgress);
   const setMouseNorm = useBeautyStore((state) => state.setMouseNorm);
   const setCursorVariant = useBeautyStore((state) => state.setCursorVariant);
-  const soundEnabled = useBeautyStore((state) => state.soundEnabled);
-  const setSoundEnabled = useBeautyStore((state) => state.setSoundEnabled);
   const introComplete = useBeautyStore((state) => state.introComplete);
   const setIntroComplete = useBeautyStore((state) => state.setIntroComplete);
   const [storyIndex, setStoryIndex] = useState(0);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [showcaseProducts, setShowcaseProducts] = useState(FALLBACK_PRODUCTS);
-  const playHoverSound = useHoverChime(soundEnabled);
 
   useEffect(() => {
     document.body.classList.add('page-immersive');
@@ -508,7 +505,6 @@ export default function HomePage() {
       const interactive = event.target.closest('a, button, [data-cursor="hover"]');
       if (interactive) {
         setCursorVariant('hover');
-        playHoverSound();
       }
     };
 
@@ -527,7 +523,7 @@ export default function HomePage() {
       document.removeEventListener('pointerover', handlePointerOver);
       document.removeEventListener('pointerout', handlePointerOut);
     };
-  }, [playHoverSound, setCursorVariant, setMouseNorm]);
+  }, [setCursorVariant, setMouseNorm]);
 
   useEffect(() => {
     if (!pageRef.current) {
@@ -629,6 +625,11 @@ export default function HomePage() {
       <CursorOrb isMobile={isMobile} />
       <ProgressRail />
 
+      {/* Floating Shop Now button placed where the sound toggle used to be */}
+      <Link to="/shop" className="sound-toggle" data-cursor="hover" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <span>Shop Now &rarr;</span>
+      </Link>
+
       <AnimatePresence>{!introComplete ? <IntroOverlay /> : null}</AnimatePresence>
 
       <div className="immersive-canvas-shell" aria-hidden="true">
@@ -640,11 +641,11 @@ export default function HomePage() {
         <Link to="/" className="immersive-nav__brand" style={{ flexShrink: 0 }}>
           Kivara
         </Link>
-        <nav className="immersive-nav__links scrollbar-hide" style={{ overflowX: 'auto', display: 'flex', whiteSpace: 'nowrap', padding: '0 8px' }}>
+        <nav className="immersive-nav__links scrollbar-hide" style={{ overflowX: 'auto', display: 'flex', whiteSpace: 'nowrap', padding: '0 8px', gap: '2rem' }}>
           <Link to="/shop" style={{ flexShrink: 0 }}>Shop All</Link>
-          <Link to="/shop?category=Lips" style={{ flexShrink: 0 }}>Lips</Link>
-          <Link to="/shop?category=Skincare" style={{ flexShrink: 0 }}>Skincare</Link>
-          <Link to="/shop?category=Hair Care" style={{ flexShrink: 0 }}>Hair Care</Link>
+          <Link to="/glowbot" style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span className="animate-pulse">✨</span> Krystal
+          </Link>
         </nav>
         <Link to="/account" className="immersive-nav__cta" style={{ flexShrink: 0 }}>
           Account

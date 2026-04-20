@@ -62,7 +62,7 @@ export default function CheckoutPage() {
       }
 
       const options = {
-        key: 'rzp_test_SfowrI45g3l6Ep',
+        key: 'rzp_live_SfpJzYCIoZ8fdy',
         amount: orderResponse.order.amount,
         currency: 'INR',
         name: 'Kivara Beauty',

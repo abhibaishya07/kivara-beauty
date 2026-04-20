@@ -5,8 +5,19 @@ import Footer from '../../components/layout/Footer';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { createOrder } from '../../api/orderApi';
+import { createRazorpayOrder, verifyRazorpayPayment } from '../../api/paymentApi';
 import Spinner from '../../components/ui/Spinner';
 import toast from 'react-hot-toast';
+
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 export default function CheckoutPage() {
   const { items, subtotal, clearCart } = useCart();
@@ -31,21 +42,88 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (items.length === 0) return toast.error('Your cart is empty!');
+
+    if (total <= 0) return toast.error('Invalid order amount!');
+
     setLoading(true);
+    const res = await loadRazorpayScript();
+    if (!res) {
+      toast.error('Razorpay SDK failed to load. Are you online?');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const orderData = {
-        customer: { name: form.name, email: form.email, phone: form.phone, address: { line1: form.line1, city: form.city, state: form.state, pincode: form.pincode } },
-        items: items.map(i => ({ product: i._id, name: i.name, price: i.price, quantity: i.quantity, image: i.images?.[0] })),
-        subtotal, shipping, total,
-        payment: { status: 'pending', method: 'cod' },
+      const { data: orderResponse } = await createRazorpayOrder(total);
+      if (!orderResponse.success) {
+        toast.error('Failed to initialize payment');
+        setLoading(false);
+        return;
+      }
+
+      const options = {
+        key: 'rzp_test_SfowrI45g3l6Ep',
+        amount: orderResponse.order.amount,
+        currency: 'INR',
+        name: 'Kivara Beauty',
+        description: 'Order Payment',
+        image: '/logo.png', // Fallback for logos
+        order_id: orderResponse.order.id,
+        handler: async function (response) {
+          try {
+            setLoading(true);
+            const verifyData = {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            };
+            const verifyRes = await verifyRazorpayPayment(verifyData);
+            
+            if (verifyRes.data.success) {
+              const orderData = {
+                customer: { name: form.name, email: form.email, phone: form.phone, address: { line1: form.line1, city: form.city, state: form.state, pincode: form.pincode } },
+                items: items.map(i => ({ product: i._id, name: i.name, price: i.price, quantity: i.quantity, image: i.images?.[0] })),
+                subtotal, shipping, total,
+                payment: { 
+                    status: 'paid', 
+                    method: 'razorpay',
+                    razorpayOrderId: response.razorpay_order_id,
+                    razorpayPaymentId: response.razorpay_payment_id,
+                    razorpaySignature: response.razorpay_signature,
+                },
+              };
+              const { data } = await createOrder(orderData);
+              clearCart();
+              toast.success(`Order ${data.order.orderNumber} placed successfully!`);
+              navigate('/account');
+            } else {
+              toast.error('Payment verification failed');
+            }
+          } catch (err) {
+            toast.error(err.response?.data?.message || 'Payment verification failed');
+          } finally {
+            setLoading(false);
+          }
+        },
+        prefill: {
+          name: form.name,
+          email: form.email,
+          contact: form.phone,
+        },
+        theme: { color: '#db2777' }, // pink-600
       };
-      const { data } = await createOrder(orderData);
-      clearCart();
-      toast.success(`Order ${data.order.orderNumber} placed successfully!`);
-      navigate('/account');
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.on('payment.failed', function (response) {
+        toast.error(response.error.description || 'Payment failed');
+        setLoading(false);
+      });
+      paymentObject.open();
+
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Order failed. Please try again.');
-    } finally { setLoading(false); }
+      toast.error(err.response?.data?.message || 'Failed to start payment process.');
+      setLoading(false);
+    }
   };
 
   if (items.length === 0) {
@@ -96,10 +174,10 @@ export default function CheckoutPage() {
             <div className="bg-lb-blush p-5 border border-lb-rose/30 text-lb-black">
               <h2 className="font-display text-lg font-medium mb-3">Payment</h2>
               <div className="flex items-center gap-3 bg-white border border-lb-border p-4">
-                <input type="radio" id="cod" name="payment" defaultChecked className="accent-lb-mauve" />
-                <label htmlFor="cod" className="text-sm font-medium cursor-pointer">Cash on Delivery</label>
+                <input type="radio" id="razorpay" name="payment" defaultChecked className="accent-lb-mauve" />
+                <label htmlFor="razorpay" className="text-sm font-medium cursor-pointer">Razorpay (Cards, UPI, NetBanking)</label>
               </div>
-              <p className="text-xs text-lb-black/70 mt-3">Razorpay online payment coming soon!</p>
+              <p className="text-xs text-lb-black/70 mt-3">Secure online payments powered by Razorpay.</p>
             </div>
 
             <button type="submit" disabled={loading} className="btn-primary w-full">

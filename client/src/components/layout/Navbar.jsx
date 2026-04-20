@@ -19,7 +19,7 @@ export default function Navbar() {
     <>
       {/* Top announcement bar */}
       <div className="bg-lb-black text-white text-center py-2 px-4 text-[10px] sm:text-[11px] tracking-widest uppercase font-medium leading-tight">
-        Free Shipping on Orders Above ₹999 &nbsp;<span className="hidden sm:inline">|</span><br className="sm:hidden" /> Use Code: LUMIBEAUTY10 for 10% Off
+        Free Shipping on Orders Above ₹999
       </div>
 
       <header className="bg-white text-lb-black border-b border-lb-border sticky top-0 z-40 shadow-sm">

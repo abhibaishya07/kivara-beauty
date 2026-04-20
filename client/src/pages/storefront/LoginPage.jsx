@@ -40,7 +40,10 @@ export default function LoginPage() {
               <input name="email" type="email" required value={form.email} onChange={handle} className="input-field" placeholder="you@example.com" autoFocus />
             </div>
             <div>
-              <label className="block text-xs tracking-widest uppercase font-semibold text-gray-600 mb-1.5">Password</label>
+              <div className="flex justify-between items-center mb-1.5">
+                <label className="block text-xs tracking-widest uppercase font-semibold text-gray-600">Password</label>
+                <Link to="/forgot-password" className="text-[10px] uppercase tracking-wider font-semibold text-lb-mauve hover:text-lb-black transition-colors">Forgot?</Link>
+              </div>
               <input name="password" type="password" required value={form.password} onChange={handle} className="input-field" placeholder="••••••••" />
             </div>
             <button type="submit" disabled={loading} className="btn-primary w-full">

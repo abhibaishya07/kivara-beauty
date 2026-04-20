@@ -16,6 +16,8 @@ import ProductDetailPage from './pages/storefront/ProductDetailPage';
 import CheckoutPage from './pages/storefront/CheckoutPage';
 import LoginPage from './pages/storefront/LoginPage';
 import RegisterPage from './pages/storefront/RegisterPage';
+import ForgotPasswordPage from './pages/storefront/ForgotPasswordPage';
+import ResetPasswordPage from './pages/storefront/ResetPasswordPage';
 import AccountPage from './pages/storefront/AccountPage';
 import GlowBotPage from './pages/storefront/GlowBotPage';
 import FAQPage from './pages/storefront/FAQPage';
@@ -60,6 +62,8 @@ export default function App() {
               <Route path="/checkout"   element={<CheckoutPage />} />
               <Route path="/login"      element={<LoginPage />} />
               <Route path="/register"   element={<RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/resetpassword/:resetToken" element={<ResetPasswordPage />} />
               <Route path="/account"    element={<AccountPage />} />
               <Route path="/glowbot"    element={<GlowBotPage />} />
               <Route path="/faq"        element={<FAQPage />} />

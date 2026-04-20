@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const crypto = require('crypto');
+const sendEmail = require('../utils/sendEmail');
 
 const sendToken = (user, statusCode, res) => {
   const token = user.getSignedJwtToken();
@@ -51,5 +53,67 @@ exports.updateProfile = async (req, res, next) => {
       req.user.id, { name, phone, address }, { new: true, runValidators: true }
     );
     res.json({ success: true, user });
+  } catch (err) { next(err); }
+};
+
+exports.forgotPassword = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'There is no user with that email' });
+    }
+
+    // Get reset token
+    const resetToken = user.getResetPasswordToken();
+
+    await user.save({ validateBeforeSave: false });
+
+    // Create reset URL pointing to frontend route
+    const resetUrl = `${req.headers.origin || 'http://localhost:5173'}/resetpassword/${resetToken}`;
+
+    // Development aid: Output to console since SMTP might not be set up
+    console.log(`\n\n=== PASSWORD RESET LINK ===\n${resetUrl}\n===========================\n\n`);
+
+    const message = `You are receiving this email because you (or someone else) have requested to reset your password.\n\nPlease click on the following link, or paste it into your browser to complete the process:\n\n${resetUrl}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Kivara Beauty - Password Reset Token',
+        message
+      });
+
+      res.status(200).json({ success: true, message: 'Email sent successfully' });
+    } catch (err) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+      return res.status(500).json({ success: false, message: 'Email could not be sent' });
+    }
+  } catch (err) { next(err); }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    // Get hashed token
+    const resetPasswordToken = crypto.createHash('sha256').update(req.params.resettoken).digest('hex');
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired token' });
+    }
+
+    // Set new password
+    user.password = req.body.password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    sendToken(user, 200, res);
   } catch (err) { next(err); }
 };

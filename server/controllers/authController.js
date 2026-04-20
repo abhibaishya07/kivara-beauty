@@ -15,8 +15,27 @@ exports.register = async (req, res, next) => {
     const { name, email, password, phone } = req.body;
     if (await User.findOne({ email }))
       return res.status(400).json({ success: false, message: 'Email already registered' });
-    const user = await User.create({ name, email, password, phone });
-    sendToken(user, 201, res);
+    
+    const user = await User.create({ name, email, password, phone, isVerified: false });
+    
+    const otp = user.generateVerifyOtp();
+    await user.save({ validateBeforeSave: false });
+
+    const message = `Welcome to Kivara Beauty!\n\nYour verification code is: ${otp}\n\nThis code will expire in 15 minutes.`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Verify Your Kivara Beauty Account',
+        message
+      });
+      res.status(201).json({ success: true, message: 'otp_sent' });
+    } catch (err) {
+      user.verifyOtp = undefined;
+      user.verifyOtpExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+      return res.status(500).json({ success: false, message: 'Email could not be sent' });
+    }
   } catch (err) { next(err); }
 };
 
@@ -25,9 +44,16 @@ exports.login = async (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password)
       return res.status(400).json({ success: false, message: 'Please provide email and password' });
+    
+    // Explicitly check for both unverified users and invalid credentials
     const user = await User.findOne({ email }).select('+password');
     if (!user || !(await user.matchPassword(password)))
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
+      
+    if (!user.isVerified) {
+      return res.status(403).json({ success: false, message: 'Please verify your email address to log in.', unverified: true });
+    }
+    
     sendToken(user, 200, res);
   } catch (err) { next(err); }
 };
@@ -116,4 +142,64 @@ exports.resetPassword = async (req, res, next) => {
 
     sendToken(user, 200, res);
   } catch (err) { next(err); }
+};
+
+exports.verifyEmail = async (req, res, next) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) return res.status(400).json({ success: false, message: 'Please provide email and OTP' });
+
+    const hashedOtp = crypto.createHash('sha256').update(otp).digest('hex');
+    const user = await User.findOne({
+      email,
+      verifyOtp: hashedOtp,
+      verifyOtpExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+    }
+
+    user.isVerified = true;
+    user.verifyOtp = undefined;
+    user.verifyOtpExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    // Instantly log them in after verification
+    sendToken(user, 200, res);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.resendOtp = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ success: false, message: 'Please provide email' });
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ success: false, message: 'There is no user with that email' });
+    if (user.isVerified) return res.status(400).json({ success: false, message: 'User is already verified' });
+
+    const otp = user.generateVerifyOtp();
+    await user.save({ validateBeforeSave: false });
+
+    const message = `Welcome to Kivara Beauty!\n\nYour new verification code is: ${otp}\n\nThis code will expire in 15 minutes.`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Verify Your Kivara Beauty Account',
+        message
+      });
+      res.status(200).json({ success: true, message: 'otp_sent' });
+    } catch (err) {
+      user.verifyOtp = undefined;
+      user.verifyOtpExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+      return res.status(500).json({ success: false, message: 'Email could not be sent' });
+    }
+  } catch (err) {
+    next(err);
+  }
 };

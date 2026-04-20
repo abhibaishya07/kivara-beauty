@@ -20,9 +20,15 @@ export default function LoginPage() {
       toast.success('Welcome back!');
       navigate('/account');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Invalid credentials');
+      if (err.response?.data?.unverified) {
+        toast.error('Please verify your email address to log in.');
+        navigate('/verify-email', { state: { email: form.email } });
+      } else {
+        toast.error(err.response?.data?.message || 'Invalid credentials');
+      }
     }
   };
+
 
   return (
     <>

@@ -17,6 +17,9 @@ const userSchema = new mongoose.Schema({
   phone:    { type: String },
   address:  addressSchema,
   role:     { type: String, enum: ['customer', 'admin'], default: 'customer' },
+  isVerified: { type: Boolean, default: false },
+  verifyOtp: String,
+  verifyOtpExpire: Date,
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 }, { timestamps: true });
@@ -51,6 +54,18 @@ userSchema.methods.getResetPasswordToken = function () {
   this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
+};
+
+userSchema.methods.generateVerifyOtp = function () {
+  // Generate a random 6 digit numeric code
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // Hash and save in DB securely
+  this.verifyOtp = crypto.createHash('sha256').update(otp).digest('hex');
+  // Expires in 15 minutes
+  this.verifyOtpExpire = Date.now() + 15 * 60 * 1000;
+
+  return otp;
 };
 
 module.exports = mongoose.model('User', userSchema);

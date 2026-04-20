@@ -17,8 +17,7 @@ export default function RegisterPage() {
     e.preventDefault();
     try {
       await register(form.name, form.email, form.password, form.phone);
-      toast.success('Account created! Welcome to Kivara.');
-      navigate('/account');
+      navigate('/verify-email', { state: { email: form.email } });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed');
     }

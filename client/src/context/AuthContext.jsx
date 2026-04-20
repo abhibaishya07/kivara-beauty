@@ -23,7 +23,16 @@ export function AuthProvider({ children }) {
   const register = async (name, email, password, phone) => {
     setLoading(true);
     try {
+      // Registration now only sends OTP, it doesn't log them in.
       const { data } = await authApi.register({ name, email, password, phone });
+      return data;
+    } finally { setLoading(false); }
+  };
+
+  const verifyRegistration = async (email, otp) => {
+    setLoading(true);
+    try {
+      const { data } = await authApi.verifyEmail({ email, otp });
       localStorage.setItem('lb_token', data.token);
       localStorage.setItem('lb_user', JSON.stringify(data.user));
       setUser(data.user);
@@ -46,7 +55,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, loading, login, register, verifyRegistration, logout, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

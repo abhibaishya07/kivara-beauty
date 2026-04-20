@@ -18,10 +18,11 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (e.g. curl, Postman, same-origin)
     if (!origin) return callback(null, true);
-    // Allow any vercel.app subdomain or an explicitly listed origin
+    // Allow any vercel.app subdomain, the exact custom domain, or an explicitly listed origin
     if (
       allowedOrigins.includes(origin) ||
-      /\.vercel\.app$/.test(origin)
+      /\.vercel\.app$/.test(origin) ||
+      /kivarabeauty\.in$/.test(origin)
     ) {
       return callback(null, true);
     }

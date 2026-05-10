@@ -61,10 +61,9 @@ export default function ProductDetailPage() {
   };
 
   const handleAdd = () => {
-    if (hasShades && !selectedShade) {
-      toast.error('Please select a shade first');
-      return;
-    }
+    // Hard guard — should never be reached when button is disabled, but keep
+    // as a safety net.
+    if (hasShades && !selectedShade) return;
     addItem(product, qty, selectedShade);
     const shadePart = selectedShade ? ` — ${selectedShade.name}` : '';
     toast.success(`${product.name}${shadePart} (×${qty}) added to cart`, {
@@ -211,31 +210,57 @@ export default function ProductDetailPage() {
             )}
 
             {/* ── Stock & Add to Bag ───────────────────────────────────── */}
-            <div className="border-t border-lb-border pt-6">
-              {/* Show stock state */}
-              {activeStock === null && hasShades ? (
-                <p className="text-lb-mauve text-sm font-semibold tracking-widest uppercase mb-4">↑ Choose a shade above</p>
-              ) : activeStock === 0 ? (
-                <p className="text-red-500 text-sm font-semibold tracking-widest uppercase mb-4">Out of Stock</p>
-              ) : (
-                <>
-                  {!hasShades && product.stock < 10 && (
-                    <p className="text-amber-600 text-xs font-semibold tracking-widest uppercase mb-4">
-                      ⚠ Only {product.stock} left in stock!
-                    </p>
-                  )}
-                  <div className="flex items-center gap-4 mb-4">
-                    <label className="text-xs tracking-widest uppercase font-semibold">Qty</label>
-                    <div className="flex items-center border border-lb-border">
-                      <button onClick={() => setQty(q => Math.max(1, q - 1))} className="px-4 py-2 hover:bg-lb-blush transition-colors">−</button>
-                      <span className="px-4 py-2 font-medium min-w-[3rem] text-center">{qty}</span>
-                      <button onClick={() => setQty(q => Math.min(activeStock ?? product.stock, q + 1))} className="px-4 py-2 hover:bg-lb-blush transition-colors">+</button>
-                    </div>
+            <div className="border-t border-lb-border pt-6 space-y-4">
+
+              {/* Out-of-stock (resolved shade, or no-shade product) */}
+              {activeStock === 0 && (
+                <p className="text-red-500 text-sm font-semibold tracking-widest uppercase">
+                  {hasShades ? `"${selectedShade.name}" is out of stock — pick another shade` : 'Out of Stock'}
+                </p>
+              )}
+
+              {/* Low-stock warning */}
+              {!hasShades && product.stock > 0 && product.stock < 10 && (
+                <p className="text-amber-600 text-xs font-semibold tracking-widest uppercase">
+                  ⚠ Only {product.stock} left in stock!
+                </p>
+              )}
+
+              {/* Qty stepper — hidden for shade products until a shade is chosen */}
+              {(!hasShades || selectedShade) && activeStock !== 0 && (
+                <div className="flex items-center gap-4">
+                  <label className="text-xs tracking-widest uppercase font-semibold">Qty</label>
+                  <div className="flex items-center border border-lb-border">
+                    <button onClick={() => setQty(q => Math.max(1, q - 1))} className="px-4 py-2 hover:bg-lb-blush transition-colors">−</button>
+                    <span className="px-4 py-2 font-medium min-w-[3rem] text-center">{qty}</span>
+                    <button onClick={() => setQty(q => Math.min(activeStock ?? product.stock, q + 1))} className="px-4 py-2 hover:bg-lb-blush transition-colors">+</button>
                   </div>
-                  <button onClick={handleAdd} className="btn-primary w-full text-center">
-                    {hasShades && !selectedShade ? 'Select a Shade to Continue' : 'Add to Bag'}
-                  </button>
-                </>
+                </div>
+              )}
+
+              {/* Add to Bag — disabled until shade selected (for shade products) */}
+              <button
+                onClick={handleAdd}
+                disabled={hasShades && !selectedShade || activeStock === 0}
+                className={`w-full text-center py-3 px-6 text-sm tracking-widest uppercase font-semibold transition-all duration-200
+                  ${
+                    (hasShades && !selectedShade) || activeStock === 0
+                      ? 'bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed'
+                      : 'btn-primary'
+                  }`}
+              >
+                {hasShades && !selectedShade
+                  ? '— Select a Shade to Add to Bag —'
+                  : activeStock === 0
+                  ? 'Out of Stock'
+                  : 'Add to Bag'}
+              </button>
+
+              {/* Nudge prompt when no shade selected */}
+              {hasShades && !selectedShade && (
+                <p className="text-center text-xs text-lb-mauve font-semibold tracking-widest uppercase animate-pulse">
+                  ↑ Pick a shade above to continue
+                </p>
               )}
             </div>
 

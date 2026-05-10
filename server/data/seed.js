@@ -871,11 +871,11 @@ const seedDB = async () => {
     await Product.insertMany(products);
     console.log(`✅ Seeded ${products.length} products from DistaUSA (5 images each)`);
 
-    const adminEmail = 'admin@kivara.com';
+    const adminEmail = 'beautykivara@gmail.com';
     const existingAdmin = await User.findOne({ email: adminEmail });
     if (!existingAdmin) {
-      await User.create({ name: 'Admin', email: adminEmail, password: 'Admin@1234', role: 'admin' });
-      console.log('✅ Admin user created: admin@kivara.com / Admin@1234');
+      await User.create({ name: 'Admin', email: adminEmail, password: 'KRITISHAwedsABHIJIT@30', role: 'admin', isVerified: true });
+      console.log('✅ Admin user created: beautykivara@gmail.com');
     } else {
       console.log('ℹ️  Admin user already exists');
     }

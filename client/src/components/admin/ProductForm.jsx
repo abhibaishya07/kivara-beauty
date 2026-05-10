@@ -6,6 +6,18 @@ import Spinner from '../ui/Spinner';
 const CATEGORIES = ['Lips', 'Eyes', 'Face', 'Skincare', 'Fragrance', 'Nails', 'Tools'];
 const EMPTY = { name: '', description: '', price: '', comparePrice: '', images: '', category: 'Lips', brand: '', stock: '', lowStockThreshold: '10', isFeatured: false };
 
+// Field must be defined OUTSIDE ProductForm so React doesn't treat it as a new
+// component type on every re-render (which would unmount/remount the input and
+// lose focus after each keystroke).
+function Field({ label, name, type = 'text', form, onChange, ...rest }) {
+  return (
+    <div>
+      <label className="block text-xs tracking-widest uppercase font-semibold text-gray-600 mb-1.5">{label}</label>
+      <input name={name} type={type} value={form[name]} onChange={onChange} className="input-field" {...rest} />
+    </div>
+  );
+}
+
 export default function ProductForm({ product, onClose, onSaved }) {
   const [form, setForm] = useState(EMPTY);
   const [loading, setLoading] = useState(false);
@@ -52,16 +64,9 @@ export default function ProductForm({ product, onClose, onSaved }) {
     } finally { setLoading(false); }
   };
 
-  const Field = ({ label, name, type = 'text', ...rest }) => (
-    <div>
-      <label className="block text-xs tracking-widest uppercase font-semibold text-gray-600 mb-1.5">{label}</label>
-      <input name={name} type={type} value={form[name]} onChange={handle} className="input-field" {...rest} />
-    </div>
-  );
-
   return (
     <form onSubmit={submit} className="space-y-5">
-      <Field label="Product Name *" name="name" required placeholder="e.g. Velvet Matte Lip Color" />
+      <Field label="Product Name *" name="name" form={form} onChange={handle} required placeholder="e.g. Velvet Matte Lip Color" />
 
       <div>
         <label className="block text-xs tracking-widest uppercase font-semibold text-gray-600 mb-1.5">Description *</label>
@@ -70,8 +75,8 @@ export default function ProductForm({ product, onClose, onSaved }) {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Field label="Price (₹) *" name="price" type="number" required min="0" step="0.01" />
-        <Field label="Compare Price (₹)" name="comparePrice" type="number" min="0" step="0.01" />
+        <Field label="Price (₹) *" name="price" type="number" form={form} onChange={handle} required min="0" step="0.01" />
+        <Field label="Compare Price (₹)" name="comparePrice" type="number" form={form} onChange={handle} min="0" step="0.01" />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -81,12 +86,12 @@ export default function ProductForm({ product, onClose, onSaved }) {
             {CATEGORIES.map(c => <option key={c}>{c}</option>)}
           </select>
         </div>
-        <Field label="Brand" name="brand" placeholder="e.g. Kivara" />
+        <Field label="Brand" name="brand" form={form} onChange={handle} placeholder="e.g. Kivara" />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Field label="Stock Qty *" name="stock" type="number" required min="0" />
-        <Field label="Low Stock Alert At" name="lowStockThreshold" type="number" min="0" />
+        <Field label="Stock Qty *" name="stock" type="number" form={form} onChange={handle} required min="0" />
+        <Field label="Low Stock Alert At" name="lowStockThreshold" type="number" form={form} onChange={handle} min="0" />
       </div>
 
       <div>

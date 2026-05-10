@@ -34,19 +34,27 @@ export default function CartDrawer({ isOpen, onClose }) {
             </div>
           ) : (
             items.map(item => (
-              <div key={item._id} className="flex gap-4 pb-5 border-b border-lb-border last:border-0">
+              <div key={item.cartKey} className="flex gap-4 pb-5 border-b border-lb-border last:border-0">
                 <img src={item.images?.[0]} alt={item.name} className="w-20 h-24 object-cover bg-lb-blush flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-[10px] text-lb-mauve tracking-widest uppercase font-semibold">{item.brand || 'Kivara'}</p>
                   <p className="text-sm font-medium leading-snug line-clamp-2 mt-0.5 text-lb-black">{item.name}</p>
+
+                  {/* Shade pill */}
+                  {item.shade && (
+                    <span className="inline-block mt-1 text-[10px] tracking-widest uppercase font-semibold text-lb-mauve bg-lb-blush border border-lb-rose/30 px-2 py-0.5">
+                      {item.shade}
+                    </span>
+                  )}
+
                   <p className="text-sm font-semibold mt-1 text-lb-black">₹{(item.price * item.quantity).toLocaleString()}</p>
                   <div className="flex items-center gap-3 mt-2">
                     <div className="flex items-center border border-lb-border">
-                      <button onClick={() => updateQty(item._id, item.quantity - 1)} className="px-3 py-1 text-sm hover:bg-lb-blush transition-colors">−</button>
+                      <button onClick={() => updateQty(item.cartKey, item.quantity - 1)} className="px-3 py-1 text-sm hover:bg-lb-blush transition-colors">−</button>
                       <span className="px-3 py-1 text-sm font-medium">{item.quantity}</span>
-                      <button onClick={() => updateQty(item._id, item.quantity + 1)} className="px-3 py-1 text-sm hover:bg-lb-blush transition-colors">+</button>
+                      <button onClick={() => updateQty(item.cartKey, item.quantity + 1)} className="px-3 py-1 text-sm hover:bg-lb-blush transition-colors">+</button>
                     </div>
-                    <button onClick={() => removeItem(item._id)} className="text-gray-400 hover:text-red-500 transition-colors text-xs tracking-wide">Remove</button>
+                    <button onClick={() => removeItem(item.cartKey)} className="text-gray-400 hover:text-red-500 transition-colors text-xs tracking-wide">Remove</button>
                   </div>
                 </div>
               </div>

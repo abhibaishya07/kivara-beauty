@@ -75,6 +75,11 @@ export default function AccountPage() {
                           <div>
                             <span className="text-sm font-medium text-lb-black block">{item.name}</span>
                             <span className="text-xs text-gray-500">Qty: {item.quantity}</span>
+                            {item.shade && (
+                              <span className="block mt-0.5 text-[10px] tracking-widest uppercase font-semibold text-lb-mauve">
+                                Shade: {item.shade}
+                              </span>
+                            )}
                           </div>
                         </div>
                         {order.fulfillment?.status === 'Delivered' && (

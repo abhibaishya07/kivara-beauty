@@ -94,7 +94,7 @@ export default function CheckoutPage() {
             if (verifyRes.data.success) {
               const orderData = {
                 customer: { name: form.name, email: form.email, phone: form.phone, address: { line1: form.line1, city: form.city, state: form.state, pincode: form.pincode } },
-                items: items.map(i => ({ product: i._id, name: i.name, price: i.price, quantity: i.quantity, image: i.images?.[0] })),
+                items: items.map(i => ({ product: i._id, name: i.name, price: i.price, quantity: i.quantity, image: i.images?.[0], shade: i.shade || '' })),
                 subtotal, shipping, total,
                 payment: { 
                     status: 'paid', 

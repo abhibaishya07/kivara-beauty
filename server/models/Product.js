@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const shadeSchema = new mongoose.Schema({
+  name:  { type: String, required: true, trim: true }, // e.g. "100 - Nude Look"
+  hex:   { type: String, required: true },             // e.g. "#F4A8A8"
+  stock: { type: Number, default: 0, min: 0 },
+  image: { type: String, default: '' },                // optional — swaps hero when selected
+}, { _id: true });
+
 const productSchema = new mongoose.Schema({
   name:              { type: String, required: true, trim: true },
   slug:              { type: String, required: true, unique: true, lowercase: true },
@@ -20,6 +27,7 @@ const productSchema = new mongoose.Schema({
   tags:              [String],
   rating:            { type: Number, default: 0 },
   numReviews:        { type: Number, default: 0 },
+  shades:            [shadeSchema],  // optional — only present for colour products
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);

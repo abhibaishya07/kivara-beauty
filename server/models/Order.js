@@ -6,6 +6,7 @@ const itemSchema = new mongoose.Schema({
   price:    Number,
   quantity: { type: Number, required: true, min: 1 },
   image:    String,
+  shade:    { type: String, default: '' }, // selected shade name, e.g. "100 - Nude Look"
 }, { _id: false });
 
 const orderSchema = new mongoose.Schema({

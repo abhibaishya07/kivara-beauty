@@ -26,10 +26,13 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [imgIdx, setImgIdx] = useState(0);
   const [qty, setQty] = useState(1);
+  const [selectedShade, setSelectedShade] = useState(null);
   const { addItem } = useCart();
 
   useEffect(() => {
     setLoading(true);
+    setSelectedShade(null);
+    setImgIdx(0);
     getProductBySlug(slug).then(({ data }) => {
       setProduct(data.product);
       return getProductReviews(data.product._id);
@@ -39,9 +42,32 @@ export default function ProductDetailPage() {
   if (loading) return <><Navbar /><div className="flex justify-center py-32"><Spinner size="lg" /></div></>;
   if (!product) return <><Navbar /><div className="text-center py-32"><p className="font-display text-2xl">Product not found</p><Link to="/shop" className="btn-primary mt-6 inline-block">Back to Shop</Link></div></>;
 
+  const hasShades = product.shades?.length > 0;
+
+  // If a shade with its own image is selected, show that; otherwise use the
+  // normal gallery image at imgIdx.
+  const heroSrc = (selectedShade?.image)
+    ? selectedShade.image
+    : (product.images?.[imgIdx] || product.images?.[0]);
+
+  // Stock comes from the selected shade (if shades exist), else product-level.
+  const activeStock = hasShades
+    ? (selectedShade ? selectedShade.stock : null)
+    : product.stock;
+
+  const handleSelectShade = (shade) => {
+    setSelectedShade(shade);
+    setQty(1);
+  };
+
   const handleAdd = () => {
-    addItem(product, qty);
-    toast.success(`${product.name} (×${qty}) added to cart`, {
+    if (hasShades && !selectedShade) {
+      toast.error('Please select a shade first');
+      return;
+    }
+    addItem(product, qty, selectedShade);
+    const shadePart = selectedShade ? ` — ${selectedShade.name}` : '';
+    toast.success(`${product.name}${shadePart} (×${qty}) added to cart`, {
       style: { background: '#FF1493', color: '#fff', borderRadius: '0', fontSize: '13px' },
     });
   };
@@ -64,13 +90,18 @@ export default function ProductDetailPage() {
         </nav>
 
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20">
-          {/* Images */}
+          {/* ── Images ──────────────────────────────────────────────────── */}
           <div className="space-y-4">
             <div className="aspect-square bg-lb-blush overflow-hidden">
-              <img src={product.images?.[imgIdx] || product.images?.[0]} alt={product.name}
-                className="w-full h-full object-cover" />
+              <img
+                src={heroSrc}
+                alt={selectedShade ? `${product.name} — ${selectedShade.name}` : product.name}
+                className="w-full h-full object-cover transition-opacity duration-300"
+                key={heroSrc}   // force fade-in on change
+              />
             </div>
-            {product.images?.length > 1 && (
+            {/* Only show gallery thumbs when no per-shade image is active */}
+            {!selectedShade?.image && product.images?.length > 1 && (
               <div className="flex gap-3">
                 {product.images.map((img, i) => (
                   <button key={i} onClick={() => setImgIdx(i)}
@@ -82,13 +113,13 @@ export default function ProductDetailPage() {
             )}
           </div>
 
-          {/* Details */}
+          {/* ── Details ─────────────────────────────────────────────────── */}
           <div className="space-y-6">
             <div>
               <p className="text-[11px] tracking-widest uppercase text-lb-mauve font-semibold mb-2">{product.brand || 'Kivara'}</p>
               <h1 className="font-display text-3xl md:text-4xl font-medium leading-tight mb-3">{product.name}</h1>
-              
-              {/* Product Rating */}
+
+              {/* Rating */}
               <div className="flex items-center gap-3 mb-4">
                 <StarRating rating={product.rating || 0} />
                 <span className="text-sm text-gray-500 font-medium">{product.rating || '0.0'} / 5</span>
@@ -111,13 +142,84 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Stock */}
+            {/* ── Shade Picker ─────────────────────────────────────────── */}
+            {hasShades && (
+              <div className="border-t border-lb-border pt-5">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs tracking-widest uppercase font-semibold text-gray-700">Select Shade</span>
+                    {selectedShade && (
+                      <>
+                        <span className="text-gray-300">·</span>
+                        <span className="text-xs font-medium text-lb-black">{selectedShade.name}</span>
+                      </>
+                    )}
+                  </div>
+                  <span className="text-[11px] tracking-widest uppercase text-gray-400 font-semibold">
+                    All Shades ({product.shades.length})
+                  </span>
+                </div>
+
+                {/* Swatch grid */}
+                <div className="flex flex-wrap gap-2.5">
+                  {product.shades.map(shade => {
+                    const isSelected = selectedShade?._id === shade._id;
+                    const outOfStock = shade.stock === 0;
+                    return (
+                      <button
+                        key={shade._id}
+                        type="button"
+                        onClick={() => !outOfStock && handleSelectShade(shade)}
+                        title={`${shade.name}${outOfStock ? ' — Out of Stock' : ''}`}
+                        disabled={outOfStock}
+                        className={`
+                          relative w-9 h-9 rounded-full transition-all duration-150 flex-shrink-0
+                          ${isSelected ? 'ring-2 ring-offset-2 ring-lb-black scale-110' : 'ring-1 ring-gray-200 hover:ring-lb-mauve hover:scale-105'}
+                          ${outOfStock ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
+                        `}
+                        style={{ backgroundColor: shade.hex }}
+                      >
+                        {/* Check mark for selected */}
+                        {isSelected && (
+                          <span className="absolute inset-0 flex items-center justify-center">
+                            <svg className="w-4 h-4 drop-shadow" fill="none" stroke="white" strokeWidth="3" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </span>
+                        )}
+                        {/* Strike-through for out of stock */}
+                        {outOfStock && (
+                          <span className="absolute inset-0 flex items-center justify-center">
+                            <svg className="w-5 h-5 text-white/70" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <line x1="4" y1="4" x2="20" y2="20" />
+                            </svg>
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Shade stock hint */}
+                {selectedShade && selectedShade.stock > 0 && selectedShade.stock < 10 && (
+                  <p className="text-amber-600 text-xs font-semibold tracking-widest uppercase mt-3">
+                    ⚠ Only {selectedShade.stock} left in this shade!
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* ── Stock & Add to Bag ───────────────────────────────────── */}
             <div className="border-t border-lb-border pt-6">
-              {product.stock === 0 ? (
+              {/* Show stock state */}
+              {activeStock === null && hasShades ? (
+                <p className="text-lb-mauve text-sm font-semibold tracking-widest uppercase mb-4">↑ Choose a shade above</p>
+              ) : activeStock === 0 ? (
                 <p className="text-red-500 text-sm font-semibold tracking-widest uppercase mb-4">Out of Stock</p>
               ) : (
                 <>
-                  {product.stock < 10 && (
+                  {!hasShades && product.stock < 10 && (
                     <p className="text-amber-600 text-xs font-semibold tracking-widest uppercase mb-4">
                       ⚠ Only {product.stock} left in stock!
                     </p>
@@ -127,10 +229,12 @@ export default function ProductDetailPage() {
                     <div className="flex items-center border border-lb-border">
                       <button onClick={() => setQty(q => Math.max(1, q - 1))} className="px-4 py-2 hover:bg-lb-blush transition-colors">−</button>
                       <span className="px-4 py-2 font-medium min-w-[3rem] text-center">{qty}</span>
-                      <button onClick={() => setQty(q => Math.min(product.stock, q + 1))} className="px-4 py-2 hover:bg-lb-blush transition-colors">+</button>
+                      <button onClick={() => setQty(q => Math.min(activeStock ?? product.stock, q + 1))} className="px-4 py-2 hover:bg-lb-blush transition-colors">+</button>
                     </div>
                   </div>
-                  <button onClick={handleAdd} className="btn-primary w-full text-center">Add to Bag</button>
+                  <button onClick={handleAdd} className="btn-primary w-full text-center">
+                    {hasShades && !selectedShade ? 'Select a Shade to Continue' : 'Add to Bag'}
+                  </button>
                 </>
               )}
             </div>
@@ -143,7 +247,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* Reviews Section */}
+        {/* ── Reviews ─────────────────────────────────────────────────────── */}
         <div className="mt-24 max-w-4xl mx-auto border-t border-lb-border pt-16 bg-white text-lb-black">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
             <div>
@@ -153,9 +257,7 @@ export default function ProductDetailPage() {
                 <p className="text-gray-500 text-sm">Based on {product.numReviews || 0} {product.numReviews === 1 ? 'review' : 'reviews'}</p>
               </div>
             </div>
-            <Link to="/account" className="btn-outline">
-              Review a past purchase
-            </Link>
+            <Link to="/account" className="btn-outline">Review a past purchase</Link>
           </div>
 
           <div className="space-y-8">

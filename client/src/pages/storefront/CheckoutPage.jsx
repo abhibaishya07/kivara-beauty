@@ -9,6 +9,18 @@ import { createRazorpayOrder, verifyRazorpayPayment } from '../../api/paymentApi
 import Spinner from '../../components/ui/Spinner';
 import toast from 'react-hot-toast';
 
+// Field must be defined OUTSIDE CheckoutPage so React doesn't treat it as a
+// new component type on every re-render, which would unmount/remount inputs
+// and cause focus loss after each keystroke.
+function Field({ label, name, type = 'text', required = true, form, onChange }) {
+  return (
+    <div>
+      <label className="block text-xs tracking-widest uppercase font-semibold text-gray-400 mb-1.5">{label}{required ? ' *' : ''}</label>
+      <input name={name} type={type} value={form[name]} onChange={onChange} required={required} className="input-field" />
+    </div>
+  );
+}
+
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
     const script = document.createElement('script');
@@ -139,12 +151,6 @@ export default function CheckoutPage() {
     );
   }
 
-  const Field = ({ label, name, type = 'text', required = true }) => (
-    <div>
-      <label className="block text-xs tracking-widest uppercase font-semibold text-gray-400 mb-1.5">{label}{required ? ' *' : ''}</label>
-      <input name={name} type={type} value={form[name]} onChange={handle} required={required} className="input-field" />
-    </div>
-  );
 
   return (
     <>
@@ -157,18 +163,18 @@ export default function CheckoutPage() {
           <div className="space-y-6">
             <h2 className="font-display text-xl font-medium pb-3 border-b border-lb-border text-lb-black">Contact Information</h2>
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Full Name" name="name" />
-              <Field label="Email" name="email" type="email" />
+              <Field label="Full Name" name="name" form={form} onChange={handle} />
+              <Field label="Email" name="email" type="email" form={form} onChange={handle} />
             </div>
-            <Field label="Phone" name="phone" type="tel" required={false} />
+            <Field label="Phone" name="phone" type="tel" required={false} form={form} onChange={handle} />
 
             <h2 className="font-display text-xl font-medium pb-3 border-b border-lb-border text-lb-black">Shipping Address</h2>
-            <Field label="Address Line 1" name="line1" />
+            <Field label="Address Line 1" name="line1" form={form} onChange={handle} />
             <div className="grid grid-cols-2 gap-4">
-              <Field label="City" name="city" />
-              <Field label="State" name="state" />
+              <Field label="City" name="city" form={form} onChange={handle} />
+              <Field label="State" name="state" form={form} onChange={handle} />
             </div>
-            <Field label="PIN Code" name="pincode" />
+            <Field label="PIN Code" name="pincode" form={form} onChange={handle} />
 
             {/* Payment */}
             <div className="bg-lb-blush p-5 border border-lb-rose/30 text-lb-black">

@@ -132,7 +132,19 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            <p className="text-gray-600 leading-relaxed text-lb-black/80">{product.description}</p>
+            {/* Description — swaps to shade-specific text when applicable */}
+            <div key={selectedShade?._id || 'product-desc'} className="animate-fadeIn">
+              <p className="text-gray-600 leading-relaxed text-lb-black/80">
+                {(selectedShade?.description) || product.description}
+              </p>
+              {/* Label when showing a shade-specific description */}
+              {selectedShade?.description && (
+                <p className="text-[10px] tracking-widest uppercase font-semibold text-lb-mauve mt-2 flex items-center gap-1">
+                  <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', backgroundColor: selectedShade.hex }} />
+                  Description for {selectedShade.name}
+                </p>
+              )}
+            </div>
 
             {/* Tags */}
             {product.tags?.length > 0 && (

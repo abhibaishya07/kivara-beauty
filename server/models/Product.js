@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const shadeSchema = new mongoose.Schema({
-  name:  { type: String, required: true, trim: true }, // e.g. "100 - Nude Look"
-  hex:   { type: String, required: true },             // e.g. "#F4A8A8"
-  stock: { type: Number, default: 0, min: 0 },
-  image: { type: String, default: '' },                // optional — swaps hero when selected
+  name:        { type: String, required: true, trim: true },
+  hex:         { type: String, required: true },
+  stock:       { type: Number, default: 0, min: 0 },
+  image:       { type: String, default: '' },
+  description: { type: String, default: '' }, // overrides product description when set
 }, { _id: true });
 
 const productSchema = new mongoose.Schema({

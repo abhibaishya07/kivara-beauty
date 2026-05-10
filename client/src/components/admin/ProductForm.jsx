@@ -9,7 +9,7 @@ const EMPTY = {
   images: '', category: 'Lips', brand: '', stock: '',
   lowStockThreshold: '10', isFeatured: false,
 };
-const EMPTY_SHADE = { name: '', hex: '#FF9EAD', stock: '0', image: '' };
+const EMPTY_SHADE = { name: '', hex: '#FF9EAD', stock: '0', image: '', description: '' };
 
 // Field must be defined OUTSIDE ProductForm so React doesn't treat it as a new
 // component type on every re-render (which would unmount/remount the input and
@@ -41,11 +41,12 @@ export default function ProductForm({ product, onClose, onSaved }) {
       });
       setShades(
         (product.shades || []).map(s => ({
-          name:  s.name  || '',
-          hex:   s.hex   || '#FF9EAD',
-          stock: s.stock ?? 0,
-          image: s.image || '',
-          _id:   s._id,
+          name:        s.name        || '',
+          hex:         s.hex         || '#FF9EAD',
+          stock:       s.stock       ?? 0,
+          image:       s.image       || '',
+          description: s.description || '',
+          _id:         s._id,
         }))
       );
     } else {
@@ -74,10 +75,11 @@ export default function ProductForm({ product, onClose, onSaved }) {
     try {
       const parsedShades = shades.map(s => ({
         ...(s._id ? { _id: s._id } : {}),
-        name:  s.name.trim(),
-        hex:   s.hex,
-        stock: Number(s.stock),
-        image: s.image.trim(),
+        name:        s.name.trim(),
+        hex:         s.hex,
+        stock:       Number(s.stock),
+        image:       s.image.trim(),
+        description: s.description.trim(),
       })).filter(s => s.name);
 
       const payload = {
@@ -156,57 +158,69 @@ export default function ProductForm({ product, onClose, onSaved }) {
 
         <div className="space-y-3">
           {shades.map((shade, idx) => (
-            <div key={idx} className="grid grid-cols-[auto_1fr_80px_1fr_32px] gap-2 items-center bg-lb-gray border border-lb-border px-3 py-2">
-              {/* Colour picker */}
-              <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-lb-border cursor-pointer flex-shrink-0">
+            <div key={idx} className="flex flex-col gap-2 bg-lb-gray border border-lb-border px-3 py-3">
+              {/* Row 1: colour picker + name + stock + image + remove */}
+              <div className="grid grid-cols-[auto_1fr_80px_1fr_32px] gap-2 items-center">
+                {/* Colour picker */}
+                <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-lb-border cursor-pointer flex-shrink-0">
+                  <input
+                    type="color"
+                    value={shade.hex}
+                    onChange={e => handleShade(idx, 'hex', e.target.value)}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    title="Pick shade colour"
+                  />
+                  <div className="w-full h-full rounded-full" style={{ backgroundColor: shade.hex }} />
+                </div>
+
+                {/* Shade name */}
                 <input
-                  type="color"
-                  value={shade.hex}
-                  onChange={e => handleShade(idx, 'hex', e.target.value)}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  title="Pick shade colour"
+                  type="text"
+                  value={shade.name}
+                  onChange={e => handleShade(idx, 'name', e.target.value)}
+                  placeholder="Shade name (e.g. Nude Look)"
+                  className="input-field text-xs py-1.5"
                 />
-                <div className="w-full h-full rounded-full" style={{ backgroundColor: shade.hex }} />
+
+                {/* Stock */}
+                <input
+                  type="number"
+                  value={shade.stock}
+                  onChange={e => handleShade(idx, 'stock', e.target.value)}
+                  min="0"
+                  placeholder="Stock"
+                  className="input-field text-xs py-1.5"
+                  title="Stock for this shade"
+                />
+
+                {/* Image URL */}
+                <input
+                  type="text"
+                  value={shade.image}
+                  onChange={e => handleShade(idx, 'image', e.target.value)}
+                  placeholder="Shade image URL (optional)"
+                  className="input-field text-xs py-1.5"
+                />
+
+                {/* Remove */}
+                <button
+                  type="button"
+                  onClick={() => removeShade(idx)}
+                  className="text-gray-400 hover:text-red-500 transition-colors text-lg leading-none font-bold"
+                  title="Remove shade"
+                >
+                  ×
+                </button>
               </div>
 
-              {/* Shade name */}
-              <input
-                type="text"
-                value={shade.name}
-                onChange={e => handleShade(idx, 'name', e.target.value)}
-                placeholder="Shade name (e.g. Nude Look)"
-                className="input-field text-xs py-1.5"
+              {/* Row 2: per-shade description */}
+              <textarea
+                value={shade.description}
+                onChange={e => handleShade(idx, 'description', e.target.value)}
+                placeholder="Shade description (optional) — shown on product page when this shade is selected"
+                rows={2}
+                className="input-field text-xs py-1.5 resize-none w-full"
               />
-
-              {/* Stock */}
-              <input
-                type="number"
-                value={shade.stock}
-                onChange={e => handleShade(idx, 'stock', e.target.value)}
-                min="0"
-                placeholder="Stock"
-                className="input-field text-xs py-1.5"
-                title="Stock for this shade"
-              />
-
-              {/* Image URL */}
-              <input
-                type="text"
-                value={shade.image}
-                onChange={e => handleShade(idx, 'image', e.target.value)}
-                placeholder="Shade image URL (optional)"
-                className="input-field text-xs py-1.5"
-              />
-
-              {/* Remove */}
-              <button
-                type="button"
-                onClick={() => removeShade(idx)}
-                className="text-gray-400 hover:text-red-500 transition-colors text-lg leading-none font-bold"
-                title="Remove shade"
-              >
-                ×
-              </button>
             </div>
           ))}
         </div>
